@@ -1,0 +1,31 @@
+{
+  "root": true,
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "plugins": [
+    "promise"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module"
+  },
+  "rules": {
+    "promise/catch-or-return": "warn",
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "no-trailing-spaces": 1,
+    "semi": ["warn", "never"],
+    "eol-last": 1,
+    "space-in-parens": ["warn", "never"],
+    "no-multiple-empty-lines": 1,
+    "prefer-const": "warn",
+    "no-mixed-spaces-and-tabs": 1,
+    "no-unused-vars": 1,
+    "no-console": 0,
+    "no-else-return": 1,
+    "space-before-blocks": 1,
+    "keyword-spacing": 1
+    }
+}

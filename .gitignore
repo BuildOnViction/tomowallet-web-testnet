@@ -1,0 +1,8 @@
+.idea
+.vscode/
+db/dev/*
+db/prod/*
+.*sw*
+.eslintcache
+config/local.json
+node_modules
