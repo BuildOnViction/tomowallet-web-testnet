@@ -34,8 +34,8 @@ router.post('/reward/:address', async function(req, res, next) {
   if (hash) {
     let tx = await web3.eth.getTransaction(hash)
     tx.value = new BigNumber(tx.value).toString()
-    tx.from = tx.from.toLowerCase()
-    tx.to = tx.to.toLowerCase()
+    tx.from = (tx.from || '').toLowerCase()
+    tx.to = (tx.to || '').toLowerCase()
     db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
   }
 

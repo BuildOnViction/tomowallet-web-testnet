@@ -32,8 +32,8 @@ const watch = async function() {
       let map = txs.map(async tx => {
         tx = await web3.eth.getTransaction(tx)
         tx.value = new BigNumber(tx.value).toString()
-        tx.from = tx.from.toLowerCase()
-        tx.to = tx.to.toLowerCase()
+        tx.from = (tx.from || '').toLowerCase()
+        tx.to = (tx.to || '').toLowerCase()
         const w = await db.Wallet.findOne({$or: [{walletAddress: tx.to}, {walletAddress: tx.from}]})
 
         return !w || db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
