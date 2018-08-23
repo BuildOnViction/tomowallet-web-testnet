@@ -2,7 +2,7 @@
 const express = require('express'),
   router = express.Router(),
   Web3 = require('web3'),
-    db = require('../models/mongodb'),
+  db = require('../models/mongodb'),
   { chain } = require('../models/blockchain')
 
 // add new user device
@@ -13,10 +13,10 @@ router.post('/reward/:address', async function(req, res, next) {
 
   let wallet = await db.Wallet.findOne({walletAddress: receiver})
   if (!wallet) {
-      wallet = await db.Wallet.create({walletAddress: receiver})
+    wallet = await db.Wallet.create({walletAddress: receiver})
   }
   if ((wallet || {}).reward) {
-      return next(Error('Already rewarded'))
+    return next(Error('Already rewarded'))
   }
 
   const amount = 15e18
