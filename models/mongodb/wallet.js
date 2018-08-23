@@ -9,16 +9,7 @@ var Wallet = new Schema({
     type: String,
     index: true
   },
-  logs: [{
-    time: Date,
-    type: {type: String},
-    change: String,
-    message: String,
-    tmcSidechain: String,
-    tmcMainchain: String,
-    txMainchain: String,
-    txSidechain: String
-  }]
+  reward: String
 }, {timestamps: true})
 
 Wallet.statics = {}
