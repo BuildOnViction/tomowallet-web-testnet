@@ -1,15 +1,21 @@
 <template>
   <div id="app">
-    <Welcome v-if="state == 'getStart'" @createWalletClick="createWallet"/>
+    <Welcome v-if="!address" @createWalletClick="createWallet"/>
     <div v-else class="maincontent">
-      <Account :address="walletAddress"
+      <Account :address="address" :balance="balance"
         @privateKeyClick="mainContent = 'privateKey'"
         @transferClick="mainContent = 'transfer'"
-        @transactionsClick="mainContent = 'transactions'"/>
+        @transactionsClick="mainContent = 'transactions'"
+        @earnClick="mainContent = 'earntomo'"/>
       <MainContainer :header="mainContainerHeader">
-        <PrivateKey v-if="mainContent === 'privateKey'" :privateKey="walletPrivateKey" class="mt50" />
-        <Transfer v-else-if="mainContent === 'transfer'" />
+        <PrivateKey v-if="mainContent === 'privateKey'" :privateKey="privateKey" class="mt50" />
+        <Transfer v-else-if="mainContent === 'transfer'"
+          :address="address" :balance="balance"
+          :isSending="isProcessing"
+          :hasError="error"
+          @sendClick="transfer"/>
         <Transactions v-else-if="mainContent === 'transactions'" />
+        <EarnTomo v-else-if="mainContent === 'earntomo'" />
       </MainContainer>
     </div>
   </div>
@@ -19,8 +25,6 @@
 import Vue from 'vue'
 import axios from 'axios';
 
-import VueQrcode from '@xkeshi/vue-qrcode'
-
 import VueSocketio from 'vue-socket.io';
 
 import bip39 from 'bip39'
@@ -28,6 +32,9 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 
 import Web3 from 'web3'
 import BigNumber from 'bignumber.js';
+import EthereumTx from 'ethereumjs-tx';
+import HDWalletProvider from 'truffle-hdwallet-provider'
+import PrivateKeyProvider from 'truffle-privatekey-provider'
 
 import Welcome from './components/Welcome';
 import Account from './components/Account';
@@ -35,17 +42,10 @@ import MainContainer from './components/MainContainer';
 import PrivateKey from './components/PrivateKey';
 import Transfer from './components/Transfer';
 import Transactions from './components/Transactions';
-
-const HDWalletProvider = require('truffle-hdwallet-provider')
-const PrivateKeyProvider = require('truffle-privatekey-provider')
-
-const mnemonic = bip39.generateMnemonic()
-const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
-const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet()
+import EarnTomo from './components/EarnTomo';
+import { setInterval, clearInterval } from 'timers';
 
 Vue.use(VueSocketio, '/')
-
-// Vue.component('qrcode', VueQrcode)
 
 export default {
   name: 'app',
@@ -55,51 +55,29 @@ export default {
     MainContainer,
     PrivateKey,
     Transfer,
-    Transactions
+    Transactions,
+    EarnTomo
   },
   data() {
-    var walletAddress = '0x' + wallet.getAddress().toString('hex');
-    var walletPrivateKey = wallet.getPrivateKey().toString('hex');
-    var walletMnemonic = mnemonic;
+    var address = '';
+    var privateKey = '';
+    var mnemonic = '';
+
     if (localStorage.wallet) {
       var localWallet = JSON.parse(localStorage.wallet);
-      walletAddress = localWallet.walletAddress
-      walletPrivateKey = localWallet.walletPrivateKey;
-      walletMnemonic = localWallet.walletMnemonic;
+      address = localWallet.address
+      privateKey = localWallet.privateKey;
+      mnemonic = localWallet.mnemonic;
     }
     return {
-      mainContent: 'transactions',
+      mainContent: 'transfer',
       web3: {},
-      showDialogConfirmDeleteWallet: false,
-      showPromptCashOut: false,
-      showPromptCashIn: false,
-      showAlert: false,
-      showPrivateKey: false,
-      showQRCode: false,
-      showBackupKey: false,
-      showMoreInfoMainChain: false,
-      showMoreInfoSideChain: false,
-      msgAlert: '',
-      expandSumaryCoin: false,
-      state: localStorage.wallet ? 'mainScreen' : 'getStart',
-      walletAddress: walletAddress,
-      walletPrivateKey: walletPrivateKey,
-      walletMnemonic: walletMnemonic,
-      mainchainInformation: '',
-      sidechainInformation: '',
-      tmcSidechain: 0,
-      tmcMainchain: 0,
-      cashOutValue: '',
-      cashInValue: '',
+      address: address,
+      privateKey: privateKey,
+      mnemonic: mnemonic,
+      balance: 0,
+      error: '',
       isProcessing: false,
-      logs: [{
-        time: new Date(),
-        message: 'Your TomoWallet created',
-        tmcMainchain: 0,
-        tmcSidechain: 0,
-        total: 0,
-        type: 'message'
-      }]
     };
   },
   computed: {
@@ -113,35 +91,20 @@ export default {
       else if (this.mainContent === 'transactions') {
         return 'Transactions'
       }
+      else if (this.mainContent === 'earntomo') {
+        return 'Earn Tomo To Test'
+      }
 
       return 'Welcome To Tomo Wallet'
-    },
-    hasCoin() {
-      return this.tmcSidechain + this.tmcMainchain > 0
-    },
-    cashOutValidation () {
-      var isCashOutValidated = isNaN(parseFloat(this.cashOutValue)) ||
-        parseFloat(this.cashOutValue) <= 0 ||
-        parseFloat(this.cashOutValue) > parseFloat(this.tmcSidechain)
-      return isCashOutValidated ? `Cash out value must be less than ${this.tmcSidechain} and greater than zero` : ''
-    },
-    cashInValidation () {
-      var isCashInValidated = isNaN(parseFloat(this.cashInValue)) ||
-        parseFloat(this.cashInValue) <= 0 ||
-        parseFloat(this.cashInValue) > parseFloat(this.tmcMainchain)
-      return isCashInValidated ? `Cash in value must be less than ${this.tmcMainchain} and greater than zero` : ''
-    },
+    }
   },
   sockets:{
     connect: function(){
-      this.$socket.emit('user', {address: this.walletAddress})
+      this.$socket.emit('user', {address: this.address})
     },
     user: function(user){
       this.logs = user.logs;
-      this.mainchainInformation = user.mainchainInformation;
-      this.sidechainInformation = user.sidechainInformation;
-      this.tmcSidechain = parseFloat(user.tmcSidechain);
-      this.tmcMainchain = parseFloat(user.tmcMainchain);
+      this.balance = user.balance;
       localStorage.logs = JSON.stringify(this.logs);
     },
     transfer: function(res){
@@ -185,93 +148,68 @@ export default {
     }
   },
   created() {
+    if (this.address) {
+      this.initWeb3();
+    }
+  },
+  methods: {
+    initWeb3() {
       let url = 'https://testnet.tomochain.com';
+
+      // this.web3 = new Web3(url);
       const walletProvider =
-          (this.walletPrivateKey.indexOf(' ') >= 0)
-          ? new HDWalletProvider(this.walletPrivateKey, url)
-          : new PrivateKeyProvider(this.walletPrivateKey, url)
+          (this.privateKey.indexOf(' ') >= 0)
+          ? new HDWalletProvider(this.privateKey, url)
+          : new PrivateKeyProvider(this.privateKey, url)
 
       this.web3 = new Web3(walletProvider)
-  },
-  mounted() { },
-  methods: {
-    transferValidation () {
-      var isTransferValidated = isNaN(parseFloat(this.transferValue)) ||
-        parseFloat(this.transferValue) <= 0 ||
-        parseFloat(this.transferValue) > parseFloat(this.tmcSidechain)
-      return isTransferValidated ? `Value must be less than ${this.tmcSidechain} and greater than zero` : ''
+
+      this.web3.eth.defaultAccount = this.address;
+      this.getBalance();
+      setInterval(() => {
+        this.getBalance();
+      }, 1000);
+    },
+    getBalance() {
+      this.web3.eth.getBalance(this.address, (err, v) => {
+        this.balance = Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
+      });
     },
     createWallet() {
+      const mnemonic = bip39.generateMnemonic();
+      const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
+      const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet();
+
+      this.address = '0x' + wallet.getAddress().toString('hex');
+      this.privateKey = wallet.getPrivateKey().toString('hex');
+      this.mnemonic = mnemonic;
+
       localStorage.wallet = JSON.stringify({
-        walletAddress: this.walletAddress,
-        walletPrivateKey: this.walletPrivateKey,
-        walletMnemonic: this.walletMnemonic
+        address: this.address,
+        privateKey: this.privateKey,
+        mnemonic: this.mnemonic
       });
+
+      this.initWeb3();
 
       this.state = 'mainScreen';
     },
-    deleteWallet() {
-      this.showDialogConfirmDeleteWallet = true;
-    },
-    onConfirm() {
-      delete localStorage.wallet;
-      delete localStorage.logs;
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    },
-    toggleExpandSumaryCoin() {
-      this.expandSumaryCoin = !this.expandSumaryCoin;
-    },
-    showCashOut() {
-      this.showPromptCashOut = true;
-    },
-    showCashIn() {
-      this.showPromptCashIn = true;
-    },
-      transfer() {
-          if (this.transferValidation()) {
-              this.msgAlert = this.transferValidation();
-              this.showAlert = true;
-              return;
+    transfer({toAddress, amount}) {
+        if (this.isProcessing) return;
+        this.isProcessing = true;
+        this.web3.eth.sendTransaction({
+          from: this.address,
+          to: toAddress,
+          value: amount * (10 ** 18),
+          gasLimit: 21000,
+          gasPrice: 1
+        }, (err, hash) => {
+          if (err) {
+            this.error = err.toString();
           }
-          if (this.isProcessing) return;
-          this.isProcessing = true;
-          const privateKeyHex = Buffer.from(this.walletPrivateKey, 'hex')
-          if (!web3.isAddress(this.toAddress)) return;
-
-          var gasPrice = 1;
-          var gasPriceHex = web3.toHex(gasPrice);
-          var amount = parseInt(web3.toWei(this.transferValue, 'ether'));
-          var nonce = web3.eth.getTransactionCount(this.walletAddr️ess);
-          var nonceHex = web3.toHex(nonce);
-          const rawTx = {
-              nonce: nonceHex,
-              gasPrice: gasPriceHex,
-              gasLimit: config.Ethereum.gasLimit,
-              to: toAddress,
-              value: web3.toHex(amount),
-              data: '0x00',
-              chainId: 89
-          };
-
-          var tx = new EthereumTx(rawTx);
-          tx.sign(privateKeyHex);
-
-          var serializedTx = tx.serialize();
-
-          web3.eth.sendRawTransaction("0x" + serializedTx.toString('hex'), function(err, hash) {
-              this.isProcessing = true;
-              // sendRawTransactionResponse(err, hash, response);
-          });
-          /*
-          axios.post('/api/wallets/transfer', {
-              from: this.walletAddress,
-              to: this.toAddress,
-              value: this.transferValue
-          });
-          */
-      }
+          this.isProcessing = false;
+        })
+    }
   }
 };
 </script>

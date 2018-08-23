@@ -1,34 +1,55 @@
 <template>
   <div class="transfer">
-    <div class="fs18">Recipient Address</div>
-    <div>
-      <input type="text" class="transfer-address" placeholder="enter recipient address"
-        v-model="address">
-    </div>
+    <div v-if="!showSummary">
+      <div class="fs16">Recipient Address</div>
+      <div>
+        <input type="text" class="transfer-address" placeholder="enter recipient address"
+          v-model="toAddress" @change="changeAddress">
+        <div :style="{opacity: errorAddress ? 1 : 0}" class="transfer-error text-right mt5">{{errorAddress || '&nbsp;'}}</div>
+      </div>
 
-    <div class="fs18 mt50">Amount</div>
-    <div>
-      <input
-        ref="amountInput"
-        type="number" class="transfer-amount"
-        v-model="amount"
-        >
-      <div class="transfer-symbol">TOMO</div>
+      <div class="fs16 mt30">Amount</div>
+      <div>
+        <input
+          ref="amountInput"
+          type="number" class="transfer-amount"
+          v-model="amount"
+          @change="changeAmount">
+        <div class="transfer-symbol">TOMO</div>
+        <div :style="{opacity: errorAmount ? 1 : 0}"  class="transfer-error text-right mt15">{{errorAmount || '&nbsp;'}}</div>
+      </div>
+      <div :style="{opacity: error ? 1 : 0}" class="transfer-error text-right mt15">{{error || '&nbsp;'}}</div>
+      <div class="text-center">
+        <button v-if="!isSending" class="btn-big btn-black mt30" @click="send">
+          <span class="ml30">SEND</span> <fa icon="arrow-right" class="fs25 ml30"/>
+        </button>
+        <button v-else class="btn-big btn-black mt30" >
+          SENDING...
+        </button>
+      </div>
     </div>
-    <div class="text-center">
-      <button class="btn-big btn-black mt50">
-        <span class="ml30">SEND</span> <fa icon="arrow-right" class="fs25 ml30"/>
+    <div v-else class="transfer-summary">
+      <div>Your transaction is in process!</div>
+
+      <button class="btn-big btn-black outline mt30" @click="doAnotherTransaction">
+        CONTINUE
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import Web3 from 'web3';
+
 export default {
+  props: ['address', 'balance', 'isSending', 'hasError'],
   data() {
     return {
-      address: '',
-      amount: 0
+      toAddress: '',
+      amount: 0,
+      errorAmount: '',
+      errorAddress: '',
+      showSummary: false,
     }
   },
   methods: {
@@ -38,9 +59,52 @@ export default {
       //   this.$refs.amountInput.value = parseFloat(this.$refs.amountInput.value) || '';
       // }
     },
+    changeAddress() {
+      this.toAddress = (this.toAddress || '').trim();
+      if (!this.toAddress) {
+        this.errorAddress = 'enter recipient address, please';
+        return;
+      }
+      if (!Web3.utils.isAddress(this.toAddress)) {
+        this.errorAddress = 'address is invalid, please try again';
+        return;
+      };
+
+      if (this.toAddress === this.address) {
+        this.errorAddress = 'recipient address is your, please try again';
+        return;
+      }
+
+      this.errorAddress = '';
+    },
     changeAmount() {
       this.amount = parseFloat(this.$refs.amountInput.value) || 0;
       this.$refs.amountInput.value = this.amount;
+      if (isNaN(this.amount) || this.amount <= 0 || this.amount > this.balance) {
+        this.errorAmount = `Value must be less than ${this.balance.toLocaleString()} and greater than 0`
+        return;
+      }
+
+      this.errorAmount = '';
+    },
+    doAnotherTransaction() {
+      this.showSummary = false;
+      this.amount = 0;
+      this.toAddress = '';
+    },
+    send() {
+      if (!this.toAddress) {
+        this.errorAddress = 'enter recipient address, please';
+        return;
+      }
+      if (!this.amount) {
+        this.errorAmount = 'enter amount, please';
+        return;
+      }
+      if (!this.errorAmount && !this.errorAddress && this.amount && this.toAddress) {
+        this.$emit('sendClick', {toAddress: this.toAddress, amount: this.amount});
+        this.showSummary = true;
+      }
     }
   }
 }
@@ -50,6 +114,12 @@ export default {
 <style lang="stylus" scoped>
   .transfer
     padding 30px
+    &-summary
+      margin-top 100px
+      text-align center
+      font-size 30px
+      font-weight 300
+
     &-address
       font-size 20px
       color #333333
@@ -61,7 +131,10 @@ export default {
       margin-top 5px
       text-align center
       outline none
+      transition all 0.3s
       // font-family monospace
+      &:focus
+        border 1px solid rgba(0,0,0,0.4)
 
     &-amount
       font-size 80px
@@ -74,6 +147,9 @@ export default {
       margin-top 5px
       text-align center
       outline none
+      transition all 0.3s
+      &:focus
+        border 1px solid rgba(0,0,0,0.4)
 
       &-none
         color gray
@@ -81,6 +157,13 @@ export default {
     &-symbol
       margin-top: -30px;
       text-align: center;
-      font-size 16px;
-      font-weight 300
+      font-size 14px;
+      font-weight 400
+      opacity 0.5
+
+    &-error
+      color red
+      font-size 14px
+      opacity 0
+      transition all 0.3s
 </style>

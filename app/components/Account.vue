@@ -4,7 +4,11 @@
     <div class="account-balance">
       <div class="fs15 text-right" style="color: rgba(255, 152, 0, 0.6)">Network: <b>Tomo Testnet</b></div>
       <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
-        {{myBalance.toLocaleString()}}
+        <animated-number
+        :value="balance"
+        :formatValue="formatToPrice"
+        :duration="500"
+        />
       </div>
       <div class="account-balance-symbol text-center">TOMO</div>
     </div>
@@ -17,7 +21,7 @@
         <fa icon="history" class="fs25"/> <span class="ml30">Transactions</span>
       </div>
       <div class="menu-line"></div>
-      <div class="menu-item">
+      <div class="menu-item" @click="$emit('earnClick')">
         <fa icon="coins" class="fs25"/> <span class="ml30">Earn Tomo to test</span>
       </div>
     </div>
@@ -26,20 +30,17 @@
 
 <script>
 import Address from './Address';
+import AnimatedNumber from "animated-number-vue";
 
 export default {
   props: ['address', 'balance'],
   components: {
-    Address
-  },
-  data() {
-    return {
-      myBalance: this.$props.balance || Math.round(Math.random() * 10000000) / 100 || 500
-    }
+    Address,
+    AnimatedNumber
   },
   computed: {
     balanceSize() {
-      var s = this.myBalance.toLocaleString();
+      var s = this.balance + '';
       switch (s.length) {
         case 1: return 100;
         case 2: return 100;
@@ -53,6 +54,11 @@ export default {
         case 10: return 65;
       }
       return 50;
+    }
+  },
+  methods: {
+    formatToPrice(value) {
+      return value.toLocaleString();
     }
   }
 }
