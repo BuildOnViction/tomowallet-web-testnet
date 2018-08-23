@@ -1,12 +1,12 @@
 <template>
   <div class="account">
-    <Address :address="address" @privateKeyClick="$emit('privateKeyClick')" />
+    <Address :address="address" @detailClick="$emit('detailClick')" />
     <div class="account-balance">
       <div class="fs15 text-right" style="color: rgba(255, 152, 0, 0.6)">Network: <b>Tomo Testnet</b></div>
       <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
         <animated-number
         :value="balance"
-        :formatValue="formatToPrice"
+        :formatValue="formatBalance"
         :duration="500"
         />
       </div>
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     balanceSize() {
-      var s = this.balance + '';
+      var s = this.formatBalance(this.balance);
       switch (s.length) {
         case 1: return 100;
         case 2: return 100;
@@ -57,8 +57,15 @@ export default {
     }
   },
   methods: {
-    formatToPrice(value) {
-      return value.toLocaleString();
+    formatBalance(value) {
+      var v = parseFloat(value);
+      return v.toFixed(2);
+      // if (Math.floor(v) === v) {
+      //   return v + '';
+      // }
+      // else {
+      //   return v.toFixed(2);
+      // }
     }
   }
 }
@@ -69,8 +76,13 @@ export default {
   .account
     background #2C2C2C
     width 380px
+    max-width 100vw
     color #ffffff
     position relative
+    @media(max-width: 767px) {
+      width 100vw
+      height 100vh
+    }
     &-balance
       padding 15px 20px
 
@@ -79,6 +91,7 @@ export default {
         font-weight 80
         margin-top 35px
         line-height 1.1
+        transition all 0.3s
 
       &-symbol
         font-size 16px

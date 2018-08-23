@@ -1,6 +1,12 @@
 <template>
   <div class="transfer">
-    <div v-if="!showSummary">
+    <div v-if="showSummary && !error" class="transfer-summary">
+      <div>Your transaction is in process!</div>
+      <button class="btn-big btn-black outline mt30" @click="doAnotherTransaction">
+        CONTINUE
+      </button>
+    </div>
+    <div v-else>
       <div class="fs16">Recipient Address</div>
       <div>
         <input type="text" class="transfer-address" placeholder="enter recipient address"
@@ -18,22 +24,15 @@
         <div class="transfer-symbol">TOMO</div>
         <div :style="{opacity: errorAmount ? 1 : 0}"  class="transfer-error text-right mt15">{{errorAmount || '&nbsp;'}}</div>
       </div>
-      <div :style="{opacity: error ? 1 : 0}" class="transfer-error text-right mt15">{{error || '&nbsp;'}}</div>
+      <div :style="{opacity: error ? 1 : 0}" class="transfer-error text-center mt15">{{error || '&nbsp;'}}</div>
       <div class="text-center">
         <button v-if="!isSending" class="btn-big btn-black mt30" @click="send">
-          <span class="ml30">SEND</span> <fa icon="arrow-right" class="fs25 ml30"/>
+          <span class="ml30">SEND</span> <fa icon="arrow-right" class="fs15 ml30"/>
         </button>
         <button v-else class="btn-big btn-black mt30" >
           SENDING...
         </button>
       </div>
-    </div>
-    <div v-else class="transfer-summary">
-      <div>Your transaction is in process!</div>
-
-      <button class="btn-big btn-black outline mt30" @click="doAnotherTransaction">
-        CONTINUE
-      </button>
     </div>
   </div>
 </template>
@@ -42,7 +41,7 @@
 import Web3 from 'web3';
 
 export default {
-  props: ['address', 'balance', 'isSending', 'hasError'],
+  props: ['address', 'balance', 'isSending', 'error'],
   data() {
     return {
       toAddress: '',
@@ -127,7 +126,7 @@ export default {
       border 1px solid rgba(0,0,0,0.15)
       border-radius 5px
       padding 15px 10px
-      width calc(100% - 15px)
+      width calc(100% - 20px)
       margin-top 5px
       text-align center
       outline none
@@ -142,7 +141,7 @@ export default {
       font-weight 200
       border 1px solid rgba(0,0,0,0.15)
       border-radius 5px
-      padding 30px 10px 30px 15px
+      padding 30px 10px
       width calc(100% - 20px)
       margin-top 5px
       text-align center

@@ -1,20 +1,21 @@
 <template>
-  <div class="t-item">
+  <div class="t-item" @click="openTomoScan">
     <div>
       <div>
         <span class="t-item-label" :class="isIn ? 'in' : 'out'">{{isIn ? 'in' : 'out'}}</span>
-        <span class="t-item-label processing">processing</span>
+        <span v-if="isProcessing" class="t-item-label processing">processing</span>
+        <span v-else class="t-item-label success">success</span>
       </div>
       <div class="t-item-des">
-        <b>{{isIn ? 'From' : 'To'}}:</b> <span class="t-item-des-address">0x9626af8b7500cd99673967ea73fc35f0daa2f7e1</span>
+        <b>{{isIn ? 'From' : 'To'}}:</b> <span class="t-item-des-address">{{isIn ? data.from : data.to}}</span>
       </div>
     </div>
     <div class="text-right">
       <div class="t-item-amount" :class="isIn ? 'in' : 'out'">
-        {{isIn ? '+' : '-'}}{{Math.round(Math.random() * 10000)/100}}
+        {{isIn ? '+' : '-'}}{{parseFloat(data.amount).toFixed(2)}}
       </div>
       <div class="t-item-time">
-        {{(new Date()).toLocaleString()}}
+        {{new Date(data.time).toLocaleString()}}
       </div>
     </div>
   </div>
@@ -22,7 +23,23 @@
 
 <script>
 export default {
-  props: ['isIn']
+  props: ['isIn', 'data'],
+  computed: {
+    isProcessing() {
+      var now = new Date().getTime();
+      var t = new Date(this.data.time).getTime();
+      if (now - t > 2000) {
+        return false;
+      }
+
+      return true;
+    }
+  },
+  methods: {
+    openTomoScan() {
+      window.open(`https://scan.testnet.tomochain.com/txs/${this.data.txHash}`, '_blank')
+    }
+  }
 }
 </script>
 
@@ -30,12 +47,12 @@ export default {
 <style lang="stylus" scoped>
   .t-item
     padding 10px 20px
-    display flex
-    align-items center
-    justify-content space-between
     border-bottom 1px solid rgba(0,0,0,0.07)
     cursor pointer
     transition all 0.3s
+    display flex
+    align-items center
+    justify-content space-between
     &:hover
       background rgba(0,0,0,0.05)
 
@@ -53,11 +70,21 @@ export default {
         background #FF5D5D
 
       &.processing
+        background gray
+
+      &.success
         background #2196f3
 
     &-des
       font-size 13px
       margin-top 5px
+
+      @media(max-width 767px) {
+        width: calc(100vw - 200px)
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
       &-address
         // font-family monospace
