@@ -211,7 +211,7 @@ export default {
     },
     getBalance() {
       this.web3.eth.getBalance(this.address, (err, v) => {
-        this.balance = 2 * Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
+        this.balance = Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
       });
     },
     createWallet() {
