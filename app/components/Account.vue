@@ -76,8 +76,13 @@ export default {
   .account
     background #2C2C2C
     width 380px
+    max-width 100vw
     color #ffffff
     position relative
+    @media(max-width: 767px) {
+      width 100vw
+      height 100vh
+    }
     &-balance
       padding 15px 20px
 

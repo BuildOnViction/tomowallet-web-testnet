@@ -126,7 +126,7 @@ export default {
       border 1px solid rgba(0,0,0,0.15)
       border-radius 5px
       padding 15px 10px
-      width calc(100% - 15px)
+      width calc(100% - 20px)
       margin-top 5px
       text-align center
       outline none
@@ -141,7 +141,7 @@ export default {
       font-weight 200
       border 1px solid rgba(0,0,0,0.15)
       border-radius 5px
-      padding 30px 10px 30px 15px
+      padding 30px 10px
       width calc(100% - 20px)
       margin-top 5px
       text-align center

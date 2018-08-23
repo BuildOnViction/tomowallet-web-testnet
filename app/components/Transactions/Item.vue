@@ -47,12 +47,12 @@ export default {
 <style lang="stylus" scoped>
   .t-item
     padding 10px 20px
-    display flex
-    align-items center
-    justify-content space-between
     border-bottom 1px solid rgba(0,0,0,0.07)
     cursor pointer
     transition all 0.3s
+    display flex
+    align-items center
+    justify-content space-between
     &:hover
       background rgba(0,0,0,0.05)
 
@@ -78,6 +78,13 @@ export default {
     &-des
       font-size 13px
       margin-top 5px
+
+      @media(max-width 767px) {
+        width: calc(100vw - 200px)
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
       &-address
         // font-family monospace

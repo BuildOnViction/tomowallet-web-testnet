@@ -5,10 +5,10 @@
       @importByPrivateKey="importWallet"/>
     <div v-else class="maincontent">
       <Account :address="address" :balance="balance"
-        @detailClick="mainContent = 'detail'"
-        @transferClick="mainContent = 'transfer'"
-        @transactionsClick="mainContent = 'transactions'"
-        @earnClick="mainContent = 'earntomo'"/>
+        @detailClick="changeMainContent('detail')"
+        @transferClick="changeMainContent('transfer')"
+        @transactionsClick="changeMainContent('transactions')"
+        @earnClick="changeMainContent('earntomo')"/>
 
       <MainContainer :header="mainContainerHeader">
         <Detail v-if="mainContent === 'detail'"
@@ -54,6 +54,31 @@ import EarnTomo from './components/EarnTomo';
 import { setInterval, clearInterval } from 'timers';
 
 Vue.use(VueSocketio, '/')
+
+function scrollTo(to, duration) {
+    const element = document.scrollingElement || document.documentElement;
+    var start = element.scrollTop;
+    var change = to - start;
+    var startDate = new Date();
+    var easeInOutQuad = function(t, b, c, d) {
+        t /= d/2;
+        if (t < 1) return c/2*t*t + b;
+        t--;
+        return -c/2 * (t*(t-2) - 1) + b;
+    };
+    var animateScroll = function() {
+        const currentDate = +new Date();
+        const currentTime = currentDate - startDate;
+        element.scrollTop = parseInt(easeInOutQuad(currentTime, start, change, duration));
+        if(currentTime < duration) {
+            requestAnimationFrame(animateScroll);
+        }
+        else {
+            element.scrollTop = to;
+        }
+    };
+    animateScroll();
+};
 
 export default {
   name: 'app',
@@ -165,6 +190,11 @@ export default {
     }
   },
   methods: {
+    changeMainContent(v) {
+      this.mainContent = v;
+      var elmnt = document.getElementById("mainContainer");
+      scrollTo(elmnt.offsetHeight, 500);
+    },
     initWallet() {
       let url = 'https://testnet.tomochain.com';
       const walletProvider =
@@ -181,7 +211,7 @@ export default {
     },
     getBalance() {
       this.web3.eth.getBalance(this.address, (err, v) => {
-        this.balance = Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
+        this.balance = 2 * Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
       });
     },
     createWallet() {
@@ -273,10 +303,16 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    min-height: 640px;
+    @media(min-width: 768px) {
+      height: 100vh;
+      min-height: 640px;
+    }
 
     .maincontent
       box-shadow 3px 3px 40px rgba(0,0,0,0.1);
       display flex;
+
+      @media(max-width 767px) {
+        display block;
+      }
 </style>

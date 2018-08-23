@@ -1,6 +1,6 @@
 <template>
-  <div class="main">
-    <div class="main-header text-center mt30">{{header || ''}}</div>
+  <div id="mainContainer" class="main">
+    <div class="main-header text-center">{{header || ''}}</div>
     <div class="main-container">
       <slot />
     </div>
@@ -17,15 +17,24 @@ export default {
 <style lang="stylus" scoped>
   .main
     width 620px
+    max-width 100vw
+
+    @media(max-width: 767px) {
+      width 100vw
+      min-height 100vh
+    }
 
     &-header
       font-size 40px
       font-weight 200
       color #333333
+      padding-top 30px
       // text-transform uppercase
 
     &-container
       overflow: auto;
-      height: 540px;
       margin-top: 15px;
+      @media(min-width: 768px) {
+        height: 540px;
+      }
 </style>

@@ -6,7 +6,7 @@
     </div>
     <div class="detail-address mt10">{{address}}</div>
 
-    <div class="mt50">
+    <div class="mt40">
       <div class="bold">Private Key</div>
       <div class="detail-privateKey">{{privateKey}}</div>
     </div>
@@ -59,6 +59,7 @@ export default {
       color #333333
       font-weight 400
       text-align center
+      word-wrap: break-word;
 
     &-privateKey
       word-wrap: break-word;
