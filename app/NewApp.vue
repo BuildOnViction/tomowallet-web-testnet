@@ -23,7 +23,7 @@
         <Transactions v-else-if="mainContent === 'transactions'"
           :logs="logs"
           :address="address"/>
-        <EarnTomo v-else-if="mainContent === 'earntomo'" />
+        <EarnTomo v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'" />
       </MainContainer>
     </div>
   </div>
@@ -112,6 +112,9 @@ export default {
       else if (this.mainContent === 'earntomo') {
         return 'Earn Tomo To Test'
       }
+      else if (this.mainContent === 'welcome') {
+        return 'Welcome To Tomo Wallet'
+      }
 
       return 'Welcome To Tomo Wallet'
     }
@@ -159,7 +162,6 @@ export default {
       else {
         this.mainContent = 'transfer';
       }
-      this.mainContent = 'detail'
     }
   },
   methods: {
@@ -183,7 +185,7 @@ export default {
       });
     },
     createWallet() {
-      this.mainContent = 'earntomo';
+      this.mainContent = 'welcome';
 
       // const mnemonic = bip39.generateMnemonic();
       // const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
@@ -206,7 +208,7 @@ export default {
       this.initWallet();
     },
     importWallet(privatekeyOrMnemonic) {
-      this.mainContent = 'earntomo';
+      this.mainContent = 'welcome';
       // if (privatekeyOrMnemonic.indexOf(' ') > 0) {
       //   const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(privatekeyOrMnemonic));
       //   const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet();
