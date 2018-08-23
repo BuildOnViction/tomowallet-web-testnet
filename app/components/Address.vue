@@ -8,8 +8,8 @@
         </div>
         <div class="account-header-address">
           <div >{{address}}</div>
-          <button class="btn-small btn-white mt5 mr5">
-            <fa icon="copy" class="fs10"/>&nbsp;&nbsp;copy
+          <button class="btn-small btn-white btn-copy mt5 mr5" :data-clipboard-text="address">
+            <fa icon="copy" class="fs10"/>&nbsp;&nbsp;{{isCopied ? 'copied' : 'copy'}}
           </button>
           <!-- <button class="btn-small btn-white mt5 mr5" @click="$emit('privateKeyClick')">
             <fa icon="info" class="fs10"/>
@@ -25,11 +25,27 @@
 
 <script>
 
-import QRCode from '@xkeshi/vue-qrcode'
+import QRCode from '@xkeshi/vue-qrcode';
+import ClipboardJS from 'clipboard';
 export default {
   props: ['address'],
   components: {
     QRCode
+  },
+  data() {
+    return {
+      isCopied: false
+    }
+  },
+  mounted() {
+    var clipboard = new ClipboardJS('.btn-copy');
+    clipboard.on('success', (e) => {
+      this.isCopied = true;
+      setTimeout(() => {
+        this.isCopied = false;
+      }, 5000);
+      e.clearSelection();
+    });
   }
 }
 </script>
