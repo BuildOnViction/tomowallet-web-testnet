@@ -7,7 +7,7 @@ var Schema = mongoose.Schema
 var Wallet = new Schema({
   walletAddress: {
     type: String,
-    index: true
+    unique: true
   },
   reward: String
 }, {timestamps: true})
