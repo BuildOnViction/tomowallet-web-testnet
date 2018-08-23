@@ -11,8 +11,11 @@
           <button class="btn-small btn-white mt5 mr5">
             <fa icon="copy" class="fs10"/>&nbsp;&nbsp;copy
           </button>
-          <button class="btn-small btn-white mt5" @click="$emit('privateKeyClick')">
-            <fa icon="key" class="fs10"/>&nbsp;&nbsp;private key
+          <!-- <button class="btn-small btn-white mt5 mr5" @click="$emit('privateKeyClick')">
+            <fa icon="info" class="fs10"/>
+          </button> -->
+          <button class="btn-small btn-white mt5" @click="$emit('detailClick')">
+            <fa icon="info" class="fs10"/>&nbsp;&nbsp;details
           </button>
         </div>
       </div>
