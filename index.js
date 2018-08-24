@@ -10,7 +10,6 @@ const app = express()
 
 // add websocket
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -27,7 +26,7 @@ app.use('/', function(req, res) {
 
 // error handler
 app.use(require('./middlewares/error'))
-require('./sockets')(io)
+require('./crawls')()
 
 // start server
 server.listen(config.get('server.port'), config.get('server.host'), function () {

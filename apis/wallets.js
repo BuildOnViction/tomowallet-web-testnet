@@ -5,7 +5,14 @@ const express = require('express'),
   db = require('../models/mongodb'),
   { web3 } = require('../models/blockchain')
 
-// add new user device
+router.post('/create/:address', async function(req, res, next) {
+  const address = (req.params.address || '').toLowerCase()
+  if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
+
+  db.Wallet.update({walletAddress: address}, {$set: {walletAddress: address}}, {upsert: true})
+  return res.json({})
+})
+
 router.post('/reward/:address', async function(req, res, next) {
   const receiver = (req.params.address || '').toLowerCase()
   if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))

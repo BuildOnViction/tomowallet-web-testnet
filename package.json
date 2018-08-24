@@ -42,7 +42,6 @@
     "vue-loader": "^13.5.0",
     "vue-material": "1.0.0-beta-7",
     "vue-router": "^3.0.1",
-    "vue-socket.io": "^2.1.1-a",
     "vue-template-compiler": "^2.5.9",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"
@@ -70,7 +69,6 @@
     "npm": "^6.4.0",
     "parsejson": "0.0.3",
     "redis": "^2.8.0",
-    "socket.io": "^2.0.4",
     "truffle-contract": "^3.0.5",
     "truffle-hdwallet-provider": "0.0.5",
     "truffle-privatekey-provider": "^0.1.0",

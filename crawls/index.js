@@ -4,22 +4,7 @@ const BigNumber = require('bignumber.js')
 const { web3 } = require('../models/blockchain')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
-const sockets = async (io) => {
-  io.on('connection', function (socket) {
-    console.info('New socket connection', socket.id)
-    socket.on('user', function (data) {
-      const account = (data.address || '').toLowerCase()
-      console.info('New user wallet =', account)
-      if (web3.utils.isAddress(account)) {
-        db.Wallet.update({
-          walletAddress: account
-        }, { $set: {
-          walletAddress: account
-        } }, { upsert: true })
-        socket.join(account)
-      }
-    })
-  })
+const crawls = async () => {
   watch()
 }
 
@@ -46,4 +31,4 @@ const watch = async function() {
   }
 }
 
-module.exports = sockets
+module.exports = crawls

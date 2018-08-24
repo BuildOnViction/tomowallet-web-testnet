@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './NewApp.vue'
+import App from './App.vue'
 import './style.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArrowRight, faInfo, faKey, faCopy, faHistory, faArrowAltCircleRight, faCoins } from '@fortawesome/free-solid-svg-icons'
