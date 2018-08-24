@@ -23,7 +23,8 @@
         <Transactions v-else-if="mainContent === 'transactions'"
           :logs="logs"
           :address="address"/>
-        <EarnTomo v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'" />
+        <EarnTomo v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'"
+          :address="address"/>
       </MainContainer>
     </div>
   </div>
@@ -37,7 +38,6 @@ import VueSocketio from 'vue-socket.io';
 
 // import bip39 from 'bip39'
 // import hdkey from 'ethereumjs-wallet/hdkey'
-
 import Web3 from 'web3'
 import BigNumber from 'bignumber.js';
 import EthereumTx from 'ethereumjs-tx';
@@ -51,7 +51,6 @@ import Detail from './components/Detail';
 import Transfer from './components/Transfer';
 import Transactions from './components/Transactions';
 import EarnTomo from './components/EarnTomo';
-import { setInterval, clearInterval } from 'timers';
 
 Vue.use(VueSocketio, '/')
 
@@ -204,6 +203,17 @@ export default {
 
       this.web3.eth.setProvider(walletProvider);
       this.web3.eth.defaultAccount = this.address;
+      axios.get('/api/wallets/txs/' + this.address)
+        .then(({data}) => {
+          var filter = data.filter(e => {
+            return !this.logs.find(i => e.hash === e.hash);
+          });
+          this.logs = this.logs.concat(filter);
+          this.logs = this.logs.sort((a, b) => {
+            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          });
+          localStorage.logs = JSON.stringify(this.logs);
+        });
       this.getBalance();
       setInterval(() => {
         this.getBalance();
@@ -280,11 +290,11 @@ export default {
         }
 
         this.addNewLog({
-          txHash: hash,
-          time: new Date(),
+          hash: hash,
+          createdAt: new Date(),
           from: this.address,
           to: toAddress,
-          amount: amount
+          value: this.web3.utils.toWei(amount + '', 'ether')
         })
 
         this.isProcessing = false;

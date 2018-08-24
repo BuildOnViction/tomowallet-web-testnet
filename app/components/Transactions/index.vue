@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="logs && logs.length > 0">
-      <Item v-for="e in (logs || [])" :key="e.txHash" :data="e" :isIn="e.to === address"/>
+      <Item v-for="e in (logs || [])" :key="e.hash" :data="e" :isIn="e.to === address"/>
     </div>
     <div v-else class="empty">
       No transactions

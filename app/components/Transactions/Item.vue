@@ -12,10 +12,10 @@
     </div>
     <div class="text-right">
       <div class="t-item-amount" :class="isIn ? 'in' : 'out'">
-        {{isIn ? '+' : '-'}}{{parseFloat(data.amount).toFixed(2)}}
+        {{isIn ? '+' : '-'}}{{value}}
       </div>
       <div class="t-item-time">
-        {{new Date(data.time).toLocaleString()}}
+        {{new Date(data.createdAt).toLocaleString()}}
       </div>
     </div>
   </div>
@@ -27,17 +27,20 @@ export default {
   computed: {
     isProcessing() {
       var now = new Date().getTime();
-      var t = new Date(this.data.time).getTime();
+      var t = new Date(this.data.createdAt).getTime();
       if (now - t > 2000) {
         return false;
       }
 
       return true;
+    },
+    value() {
+      return (parseInt(this.data.value) / (10 ** 18)).toFixed(2)
     }
   },
   methods: {
     openTomoScan() {
-      window.open(`https://scan.testnet.tomochain.com/txs/${this.data.txHash}`, '_blank')
+      window.open(`https://scan.testnet.tomochain.com/txs/${this.data.hash}`, '_blank')
     }
   }
 }

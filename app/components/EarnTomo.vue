@@ -1,16 +1,29 @@
 <template>
   <div class="earntomo">
-    <div>Go <a href="https://faucet.testnet.tomochain.com/" target="_blank">here</a> and then enter your wallet address.<br/> We will send 15 TOMO to you.</div>
-
-    <button class="btn-big btn-black mt50" @click="request">request 15 tomo</button>
+    <div>Hello friends, click <b>Request</b> button bellow to receive your first Tomocoins from Tomo Reward Engine</div>
+    <button class="btn-big btn-black mt50" @click="request">{{isRequested ? 'requested' : 'request'}}</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+  props: ['address'],
+  data() {
+    return {
+      isRequested: !!localStorage.requestedTomo || false
+    }
+  },
   methods: {
     request() {
-      window.open('https://faucet.testnet.tomochain.com/', '_blank')
+      if (this.isRequested) return;
+
+      axios.post('api/wallets/reward/' + this.address)
+      .then(({data}) => {
+        this.isRequested = true;
+        localStorage.requestedTomo = 'true';
+      })
     }
   }
 }
@@ -23,4 +36,5 @@ export default {
     margin-top 100px
     font-size 30px
     font-weight 300
+    padding 30px
 </style>
