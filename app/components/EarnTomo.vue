@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div>Hello friends, click <b>Request</b> button bellow to receive your first TOMO</div>
-      <button class="btn-big btn-black mt50" @click="request">{{isRepuesting ? 'requesting' : 'request'}}</button>
+      <button class="btn-big btn-black mt50" @click="request">{{isRequesting ? 'requesting' : 'request'}}</button>
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   props: ['address'],
   data() {
     return {
-      isRepuesting: false,
+      isRequesting: false,
       isRequested: !!localStorage.requestedTomo || false
     }
   },
@@ -25,10 +25,11 @@ export default {
     request() {
       if (this.isRequested) return;
 
-      this.isRepuesting = true;
+      this.isRequesting = true;
       axios.post('api/wallets/reward/' + this.address)
       .then(({data}) => {
         this.isRequested = true;
+        this.isRequesting = false;
         localStorage.requestedTomo = 'true';
       })
     }
