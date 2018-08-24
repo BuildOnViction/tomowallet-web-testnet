@@ -1,18 +1,24 @@
-FROM node:8
-MAINTAINER ToMo Team
+FROM node:8-alpine
 
-RUN npm install -g pm2 truffle
+WORKDIR /app
 
-WORKDIR /build
+COPY package*.json ./
 
-COPY ./package.json /build
-COPY ./package-lock.json /build
-RUN npm install
-COPY ./ /build
-RUN npm run build
+RUN apk --no-cache --virtual deps add \
+      python \
+      make \
+      g++ \
+      bash \
+      git \
+    && npm install
 
-EXPOSE 80
+COPY . .
 
-RUN chmod +x ./entrypoint.sh
+RUN npm run build \
+    && rm -rf node_modules \
+    && npm install --production \
+    && apk del deps
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["npm"]
+
+CMD ["start"]

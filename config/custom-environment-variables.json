@@ -1,5 +1,17 @@
 {
+  "server": {
+    "host": "SERVER_HOST",
+    "port": "SERVER_PORT"
+  },
   "mnemonic": "MNEMONIC",
-  "ropsten": "ROPSTEN_URL",
-  "rinkeby": "RINKEBY_URL"
+  "db": {
+    "uri": "DB_URI"
+  },
+  "redis": {
+      "host": "REDIS_HOST"
+  },
+  "blockchain": {
+    "rpc": "BC_RPC",
+    "networkId": "BC_NETWORK_ID"
+  }
 }

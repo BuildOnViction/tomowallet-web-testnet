@@ -1,0 +1,47 @@
+sudo: required
+language: node_js
+node_js: "8"
+
+jobs:
+  include:
+    - stage: Lint
+      script: npm run lint
+    - stage: Test
+
+    - stage: Build and push untagged commit into image tomowallet
+      services:
+        - docker
+      install: skip
+      before_script:
+        - docker build -t tomochain/tomowallet .
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+        - docker tag tomochain/tomowallet tomochain/tomowallet:latest
+        - docker push tomochain/tomowallet:latest
+        - docker tag tomochain/tomowallet tomochain/tomowallet:$TRAVIS_BUILD_ID
+        - docker push tomochain/tomowallet:$TRAVIS_BUILD_ID
+      after_success:
+        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
+
+    - stage: Build and push tagged commit into image tomowallet
+      services:
+        - docker
+      install: skip
+      before_script:
+        - docker build -t tomochain/tomowallet .
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+        - docker tag tomochain/tomowallet tomochain/tomowallet:latest
+        - docker push tomochain/tomowallet:latest
+        - docker tag tomochain/tomowallet tomochain/tomowallet:$TRAVIS_TAG
+        - docker push tomochain/tomowallet:$TRAVIS_TAG
+      after_success:
+        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
+
+stages:
+  - name: Lint
+  - name: Test
+  - name: Build and push untagged commit into image tomowallet
+    if: type != pull_request AND branch = wallet AND tag IS blank AND repo = tomochain/tomowallet
+  - name: Build and push tagged commit into image tomowallet
+    if: type != pull_request AND branch = wallet AND tag = true AND repo = tomochain/tomowallet

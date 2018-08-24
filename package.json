@@ -9,6 +9,7 @@
     "dev": "npm run webpack & npm run nodemon",
     "contracts": "truffle deploy --reset --network sidechain --compile-all && truffle deploy --reset --network mainchain --compile-all",
     "nodemon": "./node_modules/.bin/nodemon index.js",
+    "start": "node index.js",
     "webpack": "node ./node_modules/webpack/bin/webpack.js -d --w"
   },
   "author": "",
@@ -64,6 +65,7 @@
     "express-validator": "^4.3.0",
     "i": "^0.3.6",
     "kue": "^0.11.6",
+    "lodash": "^4.17.10",
     "mongoose": "^4.13.7",
     "npm": "^6.4.0",
     "redis": "^2.8.0",
