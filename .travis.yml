@@ -42,6 +42,6 @@ stages:
   - name: Lint
   - name: Test
   - name: Build and push untagged commit into image tomowallet
-    if: type != pull_request AND branch = wallet AND tag IS blank AND repo = tomochain/tomowallet
+    if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomowallet
   - name: Build and push tagged commit into image tomowallet
-    if: type != pull_request AND branch = wallet AND tag = true AND repo = tomochain/tomowallet
+    if: type != pull_request AND branch = master AND tag = true AND repo = tomochain/tomowallet
