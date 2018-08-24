@@ -210,7 +210,7 @@ export default {
           });
           this.logs = this.logs.concat(filter);
           this.logs = this.logs.sort((a, b) => {
-            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           });
           localStorage.logs = JSON.stringify(this.logs);
         });
