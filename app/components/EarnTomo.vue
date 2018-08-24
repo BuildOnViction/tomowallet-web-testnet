@@ -1,7 +1,12 @@
 <template>
   <div class="earntomo">
-    <div>Hello friends, click <b>Request</b> button bellow to receive your first Tomocoins from Tomo Reward Engine</div>
-    <button class="btn-big btn-black mt50" @click="request">{{isRequested ? 'requested' : 'request'}}</button>
+    <div v-if="isRequested">
+      We sent 15 TOMO to your wallet.<br/>Each wallet can only receive once
+    </div>
+    <div v-else>
+      <div>Hello friends, click <b>Request</b> button bellow to receive your first TOMO</div>
+      <button class="btn-big btn-black mt50" @click="request">{{isRepuesting ? 'requesting' : 'request'}}</button>
+    </div>
   </div>
 </template>
 
@@ -12,6 +17,7 @@ export default {
   props: ['address'],
   data() {
     return {
+      isRepuesting: false,
       isRequested: !!localStorage.requestedTomo || false
     }
   },
@@ -19,6 +25,7 @@ export default {
     request() {
       if (this.isRequested) return;
 
+      this.isRepuesting = true;
       axios.post('api/wallets/reward/' + this.address)
       .then(({data}) => {
         this.isRequested = true;

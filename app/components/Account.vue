@@ -22,7 +22,7 @@
       </div>
       <div class="menu-line"></div>
       <div class="menu-item" @click="$emit('earnClick')">
-        <fa icon="coins" class="fs25"/> <span class="ml30">Earn Tomo to test</span>
+        <fa icon="coins" class="fs25"/> <span class="ml30">Earn TOMO to test</span>
       </div>
     </div>
   </div>
