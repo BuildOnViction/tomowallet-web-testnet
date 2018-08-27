@@ -30,7 +30,7 @@ module.exports = {
       { test: /\.json$/, use: 'json-loader' },
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: path.resolve(__dirname, 'node_modules'),
         loader: 'babel-loader',
         query: {
           presets: ['es2015'],

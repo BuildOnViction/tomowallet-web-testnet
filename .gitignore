@@ -7,3 +7,4 @@ db/prod/*
 config/local.json
 node_modules
 box-img*.png
+build/
