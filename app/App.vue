@@ -205,7 +205,7 @@ export default {
     },
     createWallet() {
       this.mainContent = 'welcome';
-
+      // Remove create wallet by bip39 because it's slow
       // const mnemonic = bip39.generateMnemonic();
       // const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
       // const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet();
@@ -228,6 +228,7 @@ export default {
     },
     importWallet(privatekeyOrMnemonic) {
       this.mainContent = 'welcome';
+      //import wallet with Bip39
       // if (privatekeyOrMnemonic.indexOf(' ') > 0) {
       //   const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(privatekeyOrMnemonic));
       //   const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet();
@@ -237,6 +238,15 @@ export default {
       //   this.mnemonic = privatekeyOrMnemonic;
       // }
       // else {
+      //   if (privatekeyOrMnemonic[0] !== '0' || privatekeyOrMnemonic[1] !== 'x') {
+      //     privatekeyOrMnemonic = '0x' + privatekeyOrMnemonic;
+      //   }
+      //   const wallet = this.web3.eth.accounts.privateKeyToAccount(privatekeyOrMnemonic);
+      //   this.address = wallet.address;
+      //   this.privateKey = privatekeyOrMnemonic.slice(2);
+      //   this.mnemonic = '';
+      // }
+
       if (privatekeyOrMnemonic[0] !== '0' || privatekeyOrMnemonic[1] !== 'x') {
         privatekeyOrMnemonic = '0x' + privatekeyOrMnemonic;
       }
@@ -244,7 +254,6 @@ export default {
       this.address = wallet.address;
       this.privateKey = privatekeyOrMnemonic.slice(2);
       this.mnemonic = '';
-      // }
 
       localStorage.wallet = JSON.stringify({
         address: this.address,
