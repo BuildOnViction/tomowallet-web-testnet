@@ -2,7 +2,7 @@ FROM node:8-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 RUN apk --no-cache --virtual deps add \
       python \
