@@ -181,13 +181,7 @@ export default {
       axios.post('/api/wallets/create/' + this.address)
       axios.get('/api/wallets/txs/' + this.address)
         .then(({data}) => {
-          var filter = data.filter(e => {
-            return !this.logs.find(i => e.hash === e.hash);
-          });
-          this.logs = this.logs.concat(filter);
-          this.logs = this.logs.sort((a, b) => {
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-          });
+          this.logs = data;
           localStorage.logs = JSON.stringify(this.logs);
         });
       this.getBalance();
