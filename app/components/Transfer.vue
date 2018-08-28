@@ -104,6 +104,9 @@ export default {
         this.errorAmount = 'enter amount, please';
         return;
       }
+      if (this.isSending) {
+        return;
+      }
       if (!this.errorAmount && !this.errorAddress && this.amount && this.toAddress) {
         this.$emit('sendClick', {toAddress: this.toAddress, amount: this.amount, callback: (hash) => {
           this.showSummary = true;
