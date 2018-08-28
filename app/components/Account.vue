@@ -60,14 +60,14 @@ export default {
   },
   methods: {
     formatBalance(value) {
-      if (value < 1) {
-        value = Math.floor(value * 10000) / 10000
-        return value.toFixed(4);
-      }
-      else {
-        value = Math.floor(value * 100) / 100
-        return value.toFixed(2);
-      }
+      value = Math.floor(value * 100) / 100
+      return value.toFixed(2);
+      // if (value < 1) {
+      //   value = Math.floor(value * 10000) / 10000
+      //   return value.toFixed(4);
+      // }
+      // else {
+      // }
     }
   }
 }
