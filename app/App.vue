@@ -159,19 +159,13 @@ export default {
   methods: {
     changeMainContent(v) {
       this.mainContent = v;
-        if (v === 'transactions') {
-          axios.get('/api/wallets/txs/' + this.address)
-            .then(({data}) => {
-              var filter = data.filter(e => {
-                return !this.logs.find(i => e.hash === e.hash);
-              });
-              this.logs = this.logs.concat(filter);
-              this.logs = this.logs.sort((a, b) => {
-                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-              });
-              localStorage.logs = JSON.stringify(this.logs);
-            });
-        }
+      if (v === 'transactions') {
+        axios.get('/api/wallets/txs/' + this.address)
+          .then(({data}) => {
+            this.logs = data;
+            localStorage.logs = JSON.stringify(this.logs);
+          });
+      }
       var elmnt = document.getElementById("mainContainer");
       scrollTo(elmnt.offsetHeight, 500);
     },
