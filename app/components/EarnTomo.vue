@@ -3,7 +3,7 @@
     <div v-if="isRequested">
       We sent 15 TOMO to your wallet.<br/>Each wallet can only receive once
     </div>
-    <div v-if="error" style="color: red;">
+    <div v-else-if="error" style="color: red;">
       ERROR: {{error}}
     </div>
     <div v-else>
