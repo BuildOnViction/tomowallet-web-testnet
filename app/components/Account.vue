@@ -3,14 +3,16 @@
     <Address :address="address" @detailClick="$emit('detailClick')" />
     <div class="account-balance">
       <div class="fs15 text-right" style="color: rgba(255, 152, 0, 0.6)">Network: <b>Tomo Testnet</b></div>
-      <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
-        <animated-number
-        :value="balance"
-        :formatValue="formatBalance"
-        :duration="500"
-        />
+      <div class="account-balance-container">
+        <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
+          <animated-number
+          :value="balance"
+          :formatValue="formatBalance"
+          :duration="500"
+          />
+        </div>
+        <div class="account-balance-symbol text-center">TOMO</div>
       </div>
-      <div class="account-balance-symbol text-center">TOMO</div>
     </div>
     <div class="menu">
       <div class="menu-item" @click="$emit('transferClick')">
@@ -86,10 +88,23 @@ export default {
     &-balance
       padding 15px 20px
 
+      @media(max-width 767px)
+        height calc(100vh - 447px)
+        position relative
+
+      &-container
+        margin-top 30px
+        @media(max-width 767px)
+          position absolute
+          top calc(50% + 20px)
+          margin-top 0
+          left 0
+          right 0
+          transform translateY(-50%)
+
       &-number
         font-size 100px
         font-weight 80
-        margin-top 35px
         line-height 1.1
         transition all 0.3s
 
