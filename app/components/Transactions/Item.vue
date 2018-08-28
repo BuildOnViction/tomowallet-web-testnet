@@ -35,7 +35,15 @@ export default {
       return true;
     },
     value() {
-      return (parseInt(this.data.value) / (10 ** 18)).toFixed(2)
+      var v = parseInt(this.data.value) / (10 ** 18);
+      if (v < 1) {
+        v = Math.floor(v * 10000) / 10000
+        return v.toFixed(4);
+      }
+      else {
+        v = Math.floor(v * 100) / 100
+        return v.toFixed(2);
+      }
     }
   },
   methods: {

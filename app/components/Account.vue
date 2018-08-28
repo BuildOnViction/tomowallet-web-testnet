@@ -60,14 +60,14 @@ export default {
   },
   methods: {
     formatBalance(value) {
-      var v = parseFloat(value);
-      return v.toFixed(2);
-      // if (Math.floor(v) === v) {
-      //   return v + '';
-      // }
-      // else {
-      //   return v.toFixed(2);
-      // }
+      if (value < 1) {
+        value = Math.floor(value * 10000) / 10000
+        return value.toFixed(4);
+      }
+      else {
+        value = Math.floor(value * 100) / 100
+        return value.toFixed(2);
+      }
     }
   }
 }
@@ -77,6 +77,10 @@ export default {
 <style lang="stylus" scoped>
   .account
     background #2C2C2C
+    // background-image: url(/media/bg.jpg);
+    // background-size: cover;
+    // background-repeat: no-repeat;
+    // background-position: center;
     width 380px
     max-width 100vw
     color #ffffff
@@ -120,7 +124,7 @@ export default {
       left 0
       right 0
       &-line
-        border-top 1px solid rgba(256, 256, 256, 0.2)
+        border-top 1px solid rgba(256, 256, 256, 0.1)
       &-item
         font-size 25px
         font-weight 200

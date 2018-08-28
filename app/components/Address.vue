@@ -55,6 +55,10 @@ export default {
     &-header
       color #ffffff
       background #191919
+      // background-image: url(/media/bg.jpg);
+      // background-size: cover;
+      // background-repeat: no-repeat;
+      // background-position: center;
       box-shadow 0 3px 6px rgba(0,0,0,0.3)
       padding 30px 25px
 

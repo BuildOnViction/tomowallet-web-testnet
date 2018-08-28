@@ -15,8 +15,11 @@
           :address="address"
           :mnemonic="mnemonic"
           :privateKey="privateKey"/>
-        <Transfer v-else-if="mainContent === 'transfer'"
-          :address="address" :balance="balance"
+        <Transfer
+          ref="transfer"
+          v-else-if="mainContent === 'transfer'"
+          :address="address"
+          :balance="balance"
           :isSending="isProcessing"
           :error="error"
           @sendClick="transfer"/>
@@ -200,7 +203,7 @@ export default {
     },
     getBalance() {
       this.web3.eth.getBalance(this.address, (err, v) => {
-        this.balance = Math.floor(parseFloat(v) / (10 ** 18) * 100) / 100;
+        this.balance = parseFloat(v) / (10 ** 18);
       });
     },
     createWallet() {
@@ -263,7 +266,7 @@ export default {
 
       this.initWallet();
     },
-    transfer({toAddress, amount}) {
+    transfer({toAddress, amount, callback}) {
       if (this.isProcessing) return;
       this.isProcessing = true;
       this.web3.eth.sendTransaction({
@@ -273,8 +276,10 @@ export default {
         gasLimit: 21000,
         gasPrice: 1
       }, (err, hash) => {
+        console.log(err, hash);
         if (err) {
           this.error = err.toString();
+          return;
         }
 
         this.addNewLog({
@@ -283,7 +288,9 @@ export default {
           from: this.address,
           to: toAddress,
           value: this.web3.utils.toWei(amount + '', 'ether')
-        })
+        });
+
+        callback && callback(hash);
 
         this.isProcessing = false;
       })

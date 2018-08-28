@@ -18,6 +18,7 @@ export default {
   .main
     width 620px
     max-width 100vw
+    background #ffffff
 
     @media(max-width: 767px) {
       width 100vw
@@ -33,7 +34,8 @@ export default {
 
     &-container
       overflow: auto;
-      margin-top: 15px;
+      padding-top: 15px;
+      padding-bottom: 15px;
       @media(min-width: 768px) {
         height: 540px;
       }

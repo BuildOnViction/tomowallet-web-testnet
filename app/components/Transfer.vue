@@ -1,9 +1,11 @@
 <template>
   <div class="transfer">
     <div v-if="showSummary && !error" class="transfer-summary">
-      <div>Your transaction is in process!</div>
+      <div>Your transaction is in process!<br/>
+        Click <a target="_blank" :href="`https://scan.testnet.tomochain.com/txs/${hash}`">here</a> to check your transaction on TomoScan
+      </div>
       <button class="btn-big btn-black outline mt30" @click="doAnotherTransaction">
-        CONTINUE
+        Do another transaction
       </button>
     </div>
     <div v-else>
@@ -49,6 +51,7 @@ export default {
       errorAmount: '',
       errorAddress: '',
       showSummary: false,
+      hash: ''
     }
   },
   methods: {
@@ -90,6 +93,7 @@ export default {
       this.showSummary = false;
       this.amount = 0;
       this.toAddress = '';
+      this.hash = '';
     },
     send() {
       if (!this.toAddress) {
@@ -101,8 +105,10 @@ export default {
         return;
       }
       if (!this.errorAmount && !this.errorAddress && this.amount && this.toAddress) {
-        this.$emit('sendClick', {toAddress: this.toAddress, amount: this.amount});
-        this.showSummary = true;
+        this.$emit('sendClick', {toAddress: this.toAddress, amount: this.amount, callback: (hash) => {
+          this.showSummary = true;
+          this.hash = hash;
+        }});
       }
     }
   }

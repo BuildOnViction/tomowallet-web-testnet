@@ -13,6 +13,15 @@ h1 {
   text-transform: uppercase;
 }
 
+a {
+  color: #2196f3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .black {
   color: #333333;
 }
@@ -36,6 +45,7 @@ h1 {
 .mt50 { margin-top: 50px; }
 
 .mb10 { margin-bottom: 10px; }
+.mb20 { margin-bottom: 20px; }
 .mb50 { margin-bottom: 50px; }
 
 .mr5 { margin-right: 5px;}

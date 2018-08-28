@@ -1,10 +1,13 @@
 <template>
   <div class="welcome">
+    <div class="text-center">
+      <img src="/media/logo.svg" width="50px" class="mb20"/>
+    </div>
     <h1 class="white">Tomo Wallet</h1>
     <div class="white">Network: Tomo testnet</div>
     <div v-if="!isImporting">
       <div class="white text-align center mt50 mb50">
-        This a wallet for Tomochain testnet version. You can receive, send and earn some token to test. Don’t send any other token to this address.
+        This is a wallet for Tomochain testnet version. You can receive, send and earn some token to test. Don’t send any other tokens to this address.
         <br/>
         Create a new wallet and let’s experience!
       </div>
@@ -84,11 +87,18 @@ export default {
 
 <style lang="stylus" scoped>
   .welcome
-    width 600px
-    background #191919
-    box-shadow 0 3px 6px rgba(0,0,0,0.3)
-    padding 50px 40px
+    width 650px
+    // background-color #191919
+    background-image: url(/media/bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow 0 3px 20px rgba(0,0,0,0.5)
+    padding 30px 40px
     text-align center
+    @media(min-width 768px) {
+      border-radius 7px
+    }
 
     &-privatekey
       padding 15px 20px
