@@ -268,6 +268,7 @@ export default {
     },
     transfer({toAddress, amount, callback}) {
       if (this.isProcessing) return;
+      this.$Progress.start()
       this.isProcessing = true;
       this.web3.eth.sendTransaction({
         from: this.address,
@@ -278,9 +279,12 @@ export default {
       }, (err, hash) => {
         console.log(err, hash);
         if (err) {
+          this.$Progress.fail()
           this.error = err.toString();
           return;
         }
+
+        this.$Progress.finish()
 
         this.addNewLog({
           hash: hash,
