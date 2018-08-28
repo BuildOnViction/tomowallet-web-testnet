@@ -18,13 +18,13 @@ router.post('/reward/:address', async function(req, res, next) {
   if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
 
   let wallet = await db.Wallet.findOne({walletAddress: receiver})
-  if (!wallet) {
-    wallet = await db.Wallet.create({walletAddress: receiver})
-  }
-  if ((wallet || {}).reward) {
+  if (wallet) {
     return next(Error('Already rewarded'))
   }
 
+  if (!wallet) {
+    wallet = await db.Wallet.create({walletAddress: receiver})
+  }
   const amount = 15e18
   const accounts = await web3.eth.getAccounts()
   const faucet = {
