@@ -28,7 +28,7 @@ export default {
     isProcessing() {
       var now = new Date().getTime();
       var t = new Date(this.data.createdAt).getTime();
-      if (now - t > 2000) {
+      if (now - t > 4000) {
         return false;
       }
 

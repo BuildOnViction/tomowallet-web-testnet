@@ -15,7 +15,7 @@
             <fa icon="info" class="fs10"/>
           </button> -->
           <button class="btn-small btn-white mt5" @click="$emit('detailClick')">
-            <fa icon="info" class="fs10"/>&nbsp;&nbsp;details
+            <fa icon="info" class="fs10"/>&nbsp;&nbsp;wallet details
           </button>
         </div>
       </div>
