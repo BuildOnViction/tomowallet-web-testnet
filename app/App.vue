@@ -116,6 +116,7 @@ export default {
       privateKey: privateKey,
       mnemonic: mnemonic,
       balance: 0,
+      rawBalance: 0,
       error: '',
       isProcessing: false,
       logs: logs
@@ -160,11 +161,7 @@ export default {
     changeMainContent(v) {
       this.mainContent = v;
       if (v === 'transactions') {
-        axios.get('/api/wallets/txs/' + this.address)
-          .then(({data}) => {
-            this.logs = data;
-            localStorage.logs = JSON.stringify(this.logs);
-          });
+        this.getTransactions();
       }
       var elmnt = document.getElementById("mainContainer");
       scrollTo(elmnt.offsetHeight, 500);
@@ -179,11 +176,7 @@ export default {
       this.web3.eth.setProvider(walletProvider);
       this.web3.eth.defaultAccount = this.address;
       axios.post('/api/wallets/create/' + this.address)
-      axios.get('/api/wallets/txs/' + this.address)
-        .then(({data}) => {
-          this.logs = data;
-          localStorage.logs = JSON.stringify(this.logs);
-        });
+      this.getTransactions();
       this.getBalance();
       setInterval(() => {
         this.getBalance();
@@ -191,8 +184,20 @@ export default {
     },
     getBalance() {
       this.web3.eth.getBalance(this.address, (err, v) => {
+        if (this.rawBalance != parseInt(v)) {
+          this.rawBalance = parseInt(v);
+          this.getTransactions();
+        }
         this.balance = parseFloat(v) / (10 ** 18);
+
       });
+    },
+    getTransactions() {
+      axios.get('/api/wallets/txs/' + this.address)
+        .then(({data}) => {
+          this.logs = data;
+          localStorage.logs = JSON.stringify(this.logs);
+        });
     },
     createWallet() {
       this.mainContent = 'welcome';
