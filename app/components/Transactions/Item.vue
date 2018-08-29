@@ -47,8 +47,24 @@ export default {
     }
   },
   methods: {
+    getSelected() {
+      if (window.getSelection) {
+          return window.getSelection().toString();
+      } else if (document.getSelection) {
+          return document.getSelection().toString();
+      } else {
+          var selection = document.selection && document.selection.createRange();
+          if (selection.text) {
+              return selection.text.toString();
+          }
+          return "";
+      }
+      return "";
+    },
     openTomoScan() {
-      window.open(`https://scan.testnet.tomochain.com/txs/${this.data.hash}`, '_blank')
+      if (!getSelection()) {
+        window.open(`https://scan.testnet.tomochain.com/txs/${this.data.hash}`, '_blank')
+      }
     }
   }
 }
