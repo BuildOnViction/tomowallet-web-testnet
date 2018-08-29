@@ -28,7 +28,7 @@ export default {
     isProcessing() {
       var now = new Date().getTime();
       var t = new Date(this.data.createdAt).getTime();
-      if (now - t > 4000) {
+      if (now - t > 2000 && this.data._id) {
         return false;
       }
 
@@ -62,7 +62,7 @@ export default {
       return "";
     },
     openTomoScan() {
-      if (!getSelection()) {
+      if (!this.getSelected()) {
         window.open(`https://scan.testnet.tomochain.com/txs/${this.data.hash}`, '_blank')
       }
     }

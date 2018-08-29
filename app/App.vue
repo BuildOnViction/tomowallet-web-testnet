@@ -186,7 +186,9 @@ export default {
       this.web3.eth.getBalance(this.address, (err, v) => {
         if (this.rawBalance != parseInt(v)) {
           this.rawBalance = parseInt(v);
-          this.getTransactions();
+          setTimeout(() => {
+            this.getTransactions();
+          }, 2000);
         }
         this.balance = parseFloat(v) / (10 ** 18);
 
