@@ -5,7 +5,12 @@ const { web3 } = require('../models/blockchain')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const crawls = async () => {
-  watch()
+  try {
+    watch()
+  } catch (e) {
+    console.log('system exit', e)
+    process.exit(1)
+  }
 }
 
 const watch = async function() {

@@ -35,4 +35,9 @@ server.listen(config.get('server.port'), config.get('server.host'), function () 
   console.info('Server start at http://%s:%s', host, port)
 })
 
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ' + err)
+  process.exit(1)
+})
+
 module.exports = app
