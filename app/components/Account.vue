@@ -109,7 +109,7 @@ export default {
       &-number
         font-size 100px
         font-weight 80
-        line-height 1.1
+        line-height 1
         transition all 0.3s
 
       &-symbol

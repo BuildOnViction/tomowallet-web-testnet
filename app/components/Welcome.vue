@@ -20,9 +20,9 @@
       </button>
     </div>
     <div v-else class="mt50">
-      <div class="white fs16">Your Private Key</div>
+      <div class="white fs16">Private Key or Recovery Phrases</div>
       <textarea class="welcome-privatekey" v-model="privateKey" type="text"
-        placeholder="enter your private key" />
+        placeholder="enter your private key or recovery phrases" />
       <div :style="{opacity: error ? 1 : 0}" class="welcome-error text-center">{{error || '&nbsp;'}}</div>
       <div>
         <button class="btn-big btn-white mt15" @click="importByPrivateKey">
@@ -64,12 +64,10 @@ export default {
       }
 
       if (this.privateKey.indexOf(' ') > 0) {
-        this.error = 'enter your private key, please';
-        return;
-        // if (this.privateKey.split(' ').length < 12) {
-        //   this.error = 'recovery pharases is invalid';
-        //   return;
-        // }
+        if (this.privateKey.split(' ').length < 12) {
+          this.error = 'recovery phrases is invalid';
+          return;
+        }
       }
       else {
         if (this.privateKey.length != 64) {
