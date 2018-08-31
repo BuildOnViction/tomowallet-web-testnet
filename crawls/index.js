@@ -5,32 +5,31 @@ const { web3 } = require('../models/blockchain')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const crawls = async () => {
-  try {
-    watch()
-  } catch (e) {
-    console.log('system exit', e)
-    process.exit(1)
-  }
+  watch()
 }
 
 const watch = async function() {
   let blockNumber = 0
   while (true) {
-    let blk = await web3.eth.getBlock('latest')
-    if (blockNumber !== blk.number) {
-      let txs = blk.transactions
-      let map = txs.map(async tx => {
-        tx = await web3.eth.getTransaction(tx)
-        tx.value = new BigNumber(tx.value).toString()
-        tx.from = (tx.from || '').toLowerCase()
-        tx.to = (tx.to || '').toLowerCase()
-        const w = await db.Wallet.findOne({$or: [{walletAddress: tx.to}, {walletAddress: tx.from}]})
+    try {
+      let blk = await web3.eth.getBlock('latest')
+      if (blockNumber !== blk.number) {
+        let txs = blk.transactions
+        let map = txs.map(async tx => {
+          tx = await web3.eth.getTransaction(tx)
+          tx.value = new BigNumber(tx.value).toString()
+          tx.from = (tx.from || '').toLowerCase()
+          tx.to = (tx.to || '').toLowerCase()
+          const w = await db.Wallet.findOne({$or: [{walletAddress: tx.to}, {walletAddress: tx.from}]})
 
-        return !w || db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
-      })
-      await Promise.all(map)
+          return !w || db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
+        })
+        await Promise.all(map)
+      }
+      blockNumber = blk.number
+    } catch (e) {
+      console.log(String(e))
     }
-    blockNumber = blk.number
 
     await sleep(500)
   }

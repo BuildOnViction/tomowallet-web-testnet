@@ -34,19 +34,23 @@ router.post('/reward/:address', async function(req, res, next) {
     value: amount
   }
 
-  const ret = await web3.eth.sendTransaction(faucet)
-  let hash = (ret || {}).transactionHash
-  wallet.reward = hash
-  wallet.save()
-  if (hash) {
-    let tx = await web3.eth.getTransaction(hash)
-    tx.value = new BigNumber(tx.value).toString()
-    tx.from = (tx.from || '').toLowerCase()
-    tx.to = (tx.to || '').toLowerCase()
-    db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
-  }
+  try {
+    const ret = await web3.eth.sendTransaction(faucet)
+    let hash = (ret || {}).transactionHash
+    wallet.reward = hash
+    wallet.save()
+    if (hash) {
+      let tx = await web3.eth.getTransaction(hash)
+      tx.value = new BigNumber(tx.value).toString()
+      tx.from = (tx.from || '').toLowerCase()
+      tx.to = (tx.to || '').toLowerCase()
+      db.Tx.update({hash: tx.hash}, {$set: tx}, {upsert: true})
+    }
 
-  return res.json(ret)
+    return res.json(ret)
+  } catch (e) {
+    return next(e)
+  }
 })
 
 router.get('/txs/:address', async function(req, res, next) {
