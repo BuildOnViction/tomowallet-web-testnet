@@ -11,6 +11,11 @@
       <div class="detail-privateKey">{{privateKey}}</div>
     </div>
 
+    <div class="mt40">
+      <div class="bold">Recovery Phrases</div>
+      <div class="detail-privateKey">{{mnemonic}}</div>
+    </div>
+
     <button class="btn-big btn-black btn-delete mt40" @click="deleteWallet">DELETE THIS WALLET</button>
     <!-- <div class="mt40">
       <div class="bold">Recovery Phrases</div>
