@@ -72,10 +72,10 @@ export default {
         return;
       };
 
-      if (this.toAddress === this.address) {
-        this.errorAddress = 'recipient address is your, please try again';
-        return;
-      }
+      // if (this.toAddress === this.address) {
+      //   this.errorAddress = 'recipient address is your, please try again';
+      //   return;
+      // }
 
       this.errorAddress = '';
     },
