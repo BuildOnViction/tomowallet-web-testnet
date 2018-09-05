@@ -128,7 +128,7 @@ export default {
         return 'Your Wallet Detail';
       }
       else if (this.mainContent === 'transfer') {
-        return 'Transfer TomoCoin'
+        return 'Transfer TOMO'
       }
       else if (this.mainContent === 'transactions') {
         return 'Transactions'
