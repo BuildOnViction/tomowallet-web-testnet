@@ -9,8 +9,11 @@ router.post('/create/:address', async function(req, res, next) {
   const address = (req.params.address || '').toLowerCase()
   if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
 
-  db.Wallet.update({walletAddress: address}, {$set: {walletAddress: address}}, {upsert: true})
-  return res.json({})
+  let w = await db.Wallet.findOne({walletAddress: address})
+  if (!w) {
+    w = await db.Wallet.create({walletAddress: address})
+  }
+  return res.json(w)
 })
 
 router.post('/reward/:address', async function(req, res, next) {
@@ -18,7 +21,7 @@ router.post('/reward/:address', async function(req, res, next) {
   if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
 
   let wallet = await db.Wallet.findOne({walletAddress: receiver})
-  if (wallet) {
+  if (wallet && wallet.reward) {
     return next(Error('Already rewarded'))
   }
 
