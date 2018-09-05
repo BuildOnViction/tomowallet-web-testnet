@@ -191,7 +191,9 @@ export default {
           }, 2000);
         }
         this.balance = parseFloat(v) / (10 ** 18);
-
+        if (this.balance < 0.000001) {
+          this.balance = 0;
+        }
       });
     },
     getTransactions() {

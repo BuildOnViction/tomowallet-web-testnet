@@ -86,7 +86,6 @@ export default {
 <style lang="stylus" scoped>
   .welcome
     width 650px
-    // background-color #191919
     background-image: url(/media/bg.jpg);
     background-size: cover;
     background-repeat: no-repeat;
