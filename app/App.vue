@@ -26,7 +26,9 @@
         <Transactions v-else-if="mainContent === 'transactions'"
           :logs="logs"
           :address="address"/>
-        <EarnTomo v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'"
+        <EarnTomo
+          v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'"
+          :isReward="isReward"
           :address="address"/>
       </MainContainer>
     </div>
@@ -111,6 +113,7 @@ export default {
 
     return {
       mainContent: 'transactions',
+      isReward: !!localStorage.requestedTomo || false,
       web3: {},
       address: address,
       privateKey: privateKey,
@@ -176,6 +179,12 @@ export default {
       this.web3.eth.setProvider(walletProvider);
       this.web3.eth.defaultAccount = this.address;
       axios.post('/api/wallets/create/' + this.address)
+      .then(({data}) => {
+        if (data.reward) {
+          localStorage.requestedTomo = 'true';
+          this.isReward = true;
+        }
+      })
       this.getTransactions();
       this.getBalance();
       setInterval(() => {
