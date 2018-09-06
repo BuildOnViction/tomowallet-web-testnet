@@ -6,12 +6,12 @@
     </div>
     <div class="detail-address mt10">{{address}}</div>
 
-    <div class="mt40">
+    <div v-if="privateKey" class="mt40">
       <div class="bold">Private Key</div>
       <div class="detail-privateKey">{{privateKey}}</div>
     </div>
 
-    <div class="mt40">
+    <div v-if="mnemonic" class="mt40">
       <div class="bold">Recovery Phrases</div>
       <div class="detail-privateKey">{{mnemonic}}</div>
     </div>
