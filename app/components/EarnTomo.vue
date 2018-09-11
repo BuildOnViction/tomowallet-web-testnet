@@ -1,6 +1,6 @@
 <template>
   <div class="earntomo">
-    <div v-if="isRequested">
+    <div v-if="isReward || isRequested">
       We sent 15 TOMO to your wallet.<br/>Each wallet can only receive once
     </div>
     <div v-else-if="error" style="color: red;">
@@ -17,7 +17,7 @@
 import axios from 'axios';
 
 export default {
-  props: ['address'],
+  props: ['address', 'isReward'],
   data() {
     return {
       error: '',
@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     request() {
-      if (this.isRequested) return;
+      if (this.isReward || this.isRequested) return;
 
       this.isRequesting = true;
       this.$Progress.start()
