@@ -17,7 +17,7 @@ const watch = async function() {
         let txs = blk.transactions
         let map = txs.map(async tx => {
           tx = await web3.eth.getTransaction(tx)
-          tx.value = new BigNumber(tx.value).toString()
+          tx.value = new BigNumber(tx.value).toString(10)
           tx.from = (tx.from || '').toLowerCase()
           tx.to = (tx.to || '').toLowerCase()
           const w = await db.Wallet.findOne({$or: [{walletAddress: tx.to}, {walletAddress: tx.from}]})
