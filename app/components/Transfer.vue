@@ -79,6 +79,16 @@ export default {
 
       this.errorAddress = '';
     },
+    formatBalance() {
+      if (this.balance < 0.01) {
+        var result = Math.floor(this.balance * 10000) / 10000
+        return result.toFixed(4);
+      }
+      else {
+        result = Math.floor(this.balance * 100) / 100
+        return result.toFixed(2);
+      }
+    },
     changeAmount() {
       this.amount = parseFloat(this.$refs.amountInput.value) || 0;
       if (isNaN(this.amount)) {
@@ -86,7 +96,7 @@ export default {
         return;
       }
       if (this.amount <= 0 || this.amount > this.balance) {
-        this.errorAmount = `Value must be less than ${this.balance.toLocaleString()} and greater than 0`
+        this.errorAmount = `Value must be less than ${this.formatBalance()} and greater than 0`
         return;
       }
 

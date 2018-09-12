@@ -241,7 +241,7 @@ export default {
       //import wallet with Bip39
       if (privatekeyOrMnemonic.indexOf(' ') > 0) {
         const key = hdkey.fromMasterSeed(bip39.mnemonicToSeed(privatekeyOrMnemonic));
-        const wallet = key.derivePath("m/44'/60'/0'/0/0").getWallet();
+        const wallet = key.derivePath("m/44'/88'/0'/0/0").getWallet();
 
         this.address = '0x' + wallet.getAddress().toString('hex');
         this.privateKey = wallet.getPrivateKey().toString('hex');
