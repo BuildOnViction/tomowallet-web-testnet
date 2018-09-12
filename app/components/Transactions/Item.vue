@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import BigNumber from 'bignumber.js'
 export default {
   props: ['isIn', 'data'],
   computed: {
@@ -35,15 +36,11 @@ export default {
       return true;
     },
     value() {
-      var v = parseInt(this.data.value) / (10 ** 18);
-      if (v < 1) {
-        v = Math.floor(v * 10000) / 10000
-        return v.toFixed(4);
+      let v =  new BigNumber(this.data.value).div(1e18);
+      if (v.comparedTo(1) > 0) {
+          return v.toFixed(2).toString(10);
       }
-      else {
-        v = Math.floor(v * 100) / 100
-        return v.toFixed(2);
-      }
+      return v.toString(10);
     }
   },
   methods: {
