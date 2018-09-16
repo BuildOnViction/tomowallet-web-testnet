@@ -7,37 +7,41 @@ const express = require('express'),
 
 router.post('/create/:address', async function(req, res, next) {
   const address = (req.params.address || '').toLowerCase()
-  if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
+  try {
+    if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
 
-  let w = await db.Wallet.findOne({walletAddress: address})
-  if (!w) {
-    w = await db.Wallet.create({walletAddress: address})
+    let w = await db.Wallet.findOne({walletAddress: address})
+    if (!w) {
+      w = await db.Wallet.create({walletAddress: address})
+    }
+    return res.json(w)
+  } catch (e) {
+    return next(e)
   }
-  return res.json(w)
 })
 
 router.post('/reward/:address', async function(req, res, next) {
   const receiver = (req.params.address || '').toLowerCase()
-  if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
-
-  let wallet = await db.Wallet.findOne({walletAddress: receiver})
-  if (wallet && wallet.reward) {
-    return next(Error('Already rewarded'))
-  }
-
-  if (!wallet) {
-    wallet = await db.Wallet.create({walletAddress: receiver})
-  }
-  const amount = 15e18
-  const accounts = await web3.eth.getAccounts()
-  const faucet = {
-    gasPrice: 1,
-    from: accounts[0],
-    to: receiver,
-    value: amount
-  }
-
   try {
+    if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
+
+    let wallet = await db.Wallet.findOne({walletAddress: receiver})
+    if (wallet && wallet.reward) {
+      return next(Error('Already rewarded'))
+    }
+
+    if (!wallet) {
+      wallet = await db.Wallet.create({walletAddress: receiver})
+    }
+    const amount = 15e18
+    const accounts = await web3.eth.getAccounts()
+    const faucet = {
+      gasPrice: 1,
+      from: accounts[0],
+      to: receiver,
+      value: amount
+    }
+
     const ret = await web3.eth.sendTransaction(faucet)
     let hash = (ret || {}).transactionHash
     wallet.reward = hash
@@ -59,13 +63,17 @@ router.post('/reward/:address', async function(req, res, next) {
 router.get('/txs/:address', async function(req, res, next) {
   let limit = req.query.limit || 100
   let skip = req.query.skip || 0
-  let address = (req.params.address || '').toLowerCase()
-  if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
-  let txs = await db.Tx.find({
-    $or: [{ to: address },{ from: address }]
-  }).sort({createdAt: -1}).limit(limit).skip(skip)
+  try {
+    let address = (req.params.address || '').toLowerCase()
+    if (!web3.utils.isAddress(address)) return next(Error('Wrong address'))
+    let txs = await db.Tx.find({
+      $or: [{ to: address },{ from: address }]
+    }).sort({createdAt: -1}).limit(limit).skip(skip)
 
-  return res.json(txs)
+    return res.json(txs)
+  } catch (e) {
+    return next(e)
+  }
 })
 
 module.exports = router
