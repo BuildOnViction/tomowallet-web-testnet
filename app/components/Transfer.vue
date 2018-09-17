@@ -21,7 +21,7 @@
         <input
           ref="amountInput"
           type="number" class="transfer-amount"
-          v-model="amount"
+          placeholder="0"
           @change="changeAmount">
         <div class="transfer-symbol">TOMO</div>
         <div :style="{opacity: errorAmount ? 1 : 0}"  class="transfer-error text-right mt15">{{errorAmount || '&nbsp;'}}</div>
@@ -79,11 +79,24 @@ export default {
 
       this.errorAddress = '';
     },
+    formatBalance() {
+      if (this.balance < 0.01) {
+        var result = Math.floor(this.balance * 10000) / 10000
+        return result.toFixed(4);
+      }
+      else {
+        result = Math.floor(this.balance * 100) / 100
+        return result.toFixed(2);
+      }
+    },
     changeAmount() {
       this.amount = parseFloat(this.$refs.amountInput.value) || 0;
-      this.$refs.amountInput.value = this.amount;
-      if (isNaN(this.amount) || this.amount <= 0 || this.amount > this.balance) {
-        this.errorAmount = `Value must be less than ${this.balance.toLocaleString()} and greater than 0`
+      if (isNaN(this.amount)) {
+        this.errorAmount = 'Value must be a number';
+        return;
+      }
+      if (this.amount <= 0 || this.amount > this.balance) {
+        this.errorAmount = `Value must be less than ${this.formatBalance()} and greater than 0`
         return;
       }
 
@@ -100,10 +113,19 @@ export default {
         this.errorAddress = 'enter recipient address, please';
         return;
       }
+      if (!Web3.utils.isAddress(this.toAddress)) {
+        this.errorAddress = 'address is invalid, please try again';
+        return;
+      };
       if (!this.amount) {
         this.errorAmount = 'enter amount, please';
         return;
       }
+      if (isNaN(this.amount) || this.amount <= 0 || this.amount > this.balance) {
+        this.errorAmount = `Value must be less than ${this.balance.toLocaleString()} and greater than 0`
+        return;
+      }
+
       if (this.isSending) {
         return;
       }
