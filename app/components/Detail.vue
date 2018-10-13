@@ -16,7 +16,7 @@
       <div class="detail-privateKey">{{mnemonic}}</div>
     </div>
 
-    <button class="btn-big btn-black btn-delete mt40" @click="deleteWallet">DELETE THIS WALLET</button>
+    <button class="btn-big btn-black btn-delete mt40" @click="deleteWallet">LOG OUT</button>
     <!-- <div class="mt40">
       <div class="bold">Recovery Phrases</div>
       <div class="detail-privateKey">{{mnemonic}}</div>
@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     deleteWallet() {
-      if (confirm("When wallet was deleted, you cannot recover your wallet. But don't worry, this is testnet only :)")){
+      if (confirm("Please make sure you already backup your wallet private key before logging out.")){
         localStorage.clear();
         window.location.reload();
       }
