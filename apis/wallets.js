@@ -36,7 +36,7 @@ router.post('/reward/:address', async function(req, res, next) {
     const amount = 15e18
     const accounts = await web3.eth.getAccounts()
     const faucet = {
-      gasPrice: 2500
+      gasPrice: 2500,
       gas: 21000,
       from: accounts[0],
       to: receiver,
