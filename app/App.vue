@@ -282,7 +282,7 @@ export default {
         to: toAddress,
         value: this.web3.utils.toWei(amount + '', 'ether'),
         gasLimit: 21000,
-        gasPrice: 1
+        gasPrice: 2500
       }, (err, hash) => {
         console.log(err, hash);
         if (err) {
