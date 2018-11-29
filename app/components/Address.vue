@@ -19,6 +19,11 @@
           </button>
         </div>
       </div>
+      <div class="mt10">
+        <button class="btn-small btn-white btn-sign-out mt5" @click="deleteWallet">
+          <fa icon="sign-out-alt" class="fs10" />&nbsp;&nbsp;Log out
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -46,6 +51,15 @@ export default {
       }, 5000);
       e.clearSelection();
     });
+  },
+
+  methods: {
+    deleteWallet() {
+      if (confirm("Please make sure you already backup your wallet private key before logging out.")){
+        localStorage.clear();
+        window.location.reload();
+      }
+    }
   }
 }
 </script>
