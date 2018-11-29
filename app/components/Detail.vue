@@ -7,13 +7,23 @@
     <div class="detail-address mt10">{{address}}</div>
 
     <div v-if="privateKey" class="mt40">
-      <div class="bold">Private Key</div>
-      <div class="detail-privateKey">{{privateKey}}</div>
+      <div class="bold">Private Key &nbsp;&nbsp;
+        <div @click="disclosePrivateKey">
+          <fa v-if="secretPrivateKey" icon="eye" class="fs50 handCursor"/>
+          <fa v-if="!secretPrivateKey" icon="eye-slash" class="fs50 handCursor"/>
+        </div>
+      </div>
+      <div id="detail-privateKey" class="detail-privateKey">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</div>
     </div>
 
     <div v-if="mnemonic" class="mt40">
-      <div class="bold">Recovery Phrases</div>
-      <div class="detail-privateKey">{{mnemonic}}</div>
+      <div class="bold">Recovery Phrases &nbsp;&nbsp;
+        <div @click="discloseRecoveryPhrases">
+          <fa v-if="secretMnemonic" icon="eye" class="fs50 handCursor"/>
+          <fa v-if="!secretMnemonic" icon="eye-slash" class="fs50 handCursor"/>
+        </div>
+      </div>
+      <div id="detail-mnemonic" class="detail-privateKey">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</div>
     </div>
     <!-- <div class="mt40">
       <div class="bold">Recovery Phrases</div>
@@ -29,6 +39,34 @@ export default {
   props: ['address', 'mnemonic', 'privateKey'],
   components: {
     QRCode
+  },
+  data() {
+    return {
+      secretPrivateKey: true,
+      secretMnemonic : true
+    }
+  },
+  methods: {
+    disclosePrivateKey() {
+      if (this.secretPrivateKey) {
+        document.getElementById("detail-privateKey").innerHTML = this.privateKey
+        this.secretPrivateKey = false
+      } else {
+        document.getElementById("detail-privateKey").innerHTML =
+          "&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+        this.secretPrivateKey = true
+      }
+    },
+    discloseRecoveryPhrases() {
+      if (this.secretMnemonic) {
+        document.getElementById("detail-mnemonic").innerHTML = this.mnemonic
+        this.secretMnemonic = false
+      } else {
+        document.getElementById("detail-mnemonic").innerHTML =
+          "&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+        this.secretMnemonic = true
+      }
+    }
   }
 }
 </script>
@@ -69,11 +107,6 @@ export default {
       outline none
       transition all 0.3s
 
-    .btn-delete
-      color red
-      border 1px solid red
-      background transparent
-      opacity 0.7
-      &:hover
-        opacity 1
+    .handCursor
+      cursor: pointer
 </style>
