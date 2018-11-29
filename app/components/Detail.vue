@@ -15,8 +15,6 @@
       <div class="bold">Recovery Phrases</div>
       <div class="detail-privateKey">{{mnemonic}}</div>
     </div>
-
-    <button class="btn-big btn-black btn-delete mt40" @click="deleteWallet">LOG OUT</button>
     <!-- <div class="mt40">
       <div class="bold">Recovery Phrases</div>
       <div class="detail-privateKey">{{mnemonic}}</div>
@@ -31,14 +29,6 @@ export default {
   props: ['address', 'mnemonic', 'privateKey'],
   components: {
     QRCode
-  },
-  methods: {
-    deleteWallet() {
-      if (confirm("Please make sure you already backup your wallet private key before logging out.")){
-        localStorage.clear();
-        window.location.reload();
-      }
-    }
   }
 }
 </script>
