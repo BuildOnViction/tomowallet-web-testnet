@@ -26,12 +26,12 @@ router.post('/reward/:address', async function(req, res, next) {
     if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
 
     let wallet = await db.Wallet.findOne({walletAddress: receiver})
-    if (wallet && wallet.reward) {
-      return next(Error('Already rewarded'))
+    if (wallet && wallet.reward >= 100) {
+      return next(Error('Already rewarded 100 times'))
     }
 
     if (!wallet) {
-      wallet = await db.Wallet.create({walletAddress: receiver})
+      wallet = await db.Wallet.create({walletAddress: receiver, reward: 0})
     }
     const amount = 15e18
     const accounts = await web3.eth.getAccounts()
@@ -45,7 +45,7 @@ router.post('/reward/:address', async function(req, res, next) {
 
     const ret = await web3.eth.sendTransaction(faucet)
     let hash = (ret || {}).transactionHash
-    wallet.reward = hash
+    wallet.reward = (parseInt(wallet.reward) + 1) || 1
     wallet.save()
     if (hash) {
       let tx = await web3.eth.getTransaction(hash)

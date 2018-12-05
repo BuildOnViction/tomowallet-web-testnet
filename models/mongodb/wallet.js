@@ -9,7 +9,7 @@ var Wallet = new Schema({
     type: String,
     unique: true
   },
-  reward: String
+  reward: Number
 }, {timestamps: true})
 
 Wallet.statics = {}
