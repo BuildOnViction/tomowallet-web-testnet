@@ -26,7 +26,7 @@ router.post('/reward/:address', async function(req, res, next) {
     if (!web3.utils.isAddress(receiver)) return next(Error('Wrong address'))
 
     let wallet = await db.Wallet.findOne({walletAddress: receiver})
-    if (wallet && wallet.reward >= 100) {
+    if (wallet && ((wallet || {}).reward || 0) >= 100) {
       return next(Error('Already rewarded 100 times'))
     }
 
