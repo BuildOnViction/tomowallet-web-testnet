@@ -60,6 +60,9 @@ export default {
   },
   methods: {
     formatBalance(value) {
+      if(this.balance === 0) {
+        return '0';
+      }
       if (this.balance < 0.01) {
         value = Math.floor(value * 10000) / 10000
         return value.toFixed(4);
