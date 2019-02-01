@@ -273,7 +273,7 @@ export default {
 
       this.initWallet();
     },
-    transfer({toAddress, amount, callback}) {
+    async transfer({toAddress, amount, callback}) {
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
