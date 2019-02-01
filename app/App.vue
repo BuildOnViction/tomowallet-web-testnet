@@ -277,35 +277,33 @@ export default {
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
-      this.web3.eth.getGasPrice(gasPrice => {
-        this.web3.eth.sendTransaction({
+      this.web3.eth.sendTransaction({
+        from: this.address,
+        to: toAddress,
+        value: this.web3.utils.toWei(amount + '', 'ether'),
+        gasLimit: 21000,
+        gasPrice: 250000000
+      }, (err, hash) => {
+        console.log(err, hash);
+        if (err) {
+          this.$Progress.fail()
+          this.error = err.toString();
+          return;
+        }
+
+        this.$Progress.finish()
+
+        this.addNewLog({
+          hash: hash,
+          createdAt: new Date(),
           from: this.address,
           to: toAddress,
-          value: this.web3.utils.toWei(amount + '', 'ether'),
-          gasLimit: 21000,
-          gasPrice: gasPrice
-        }, (err, hash) => {
-          console.log(err, hash);
-          if (err) {
-            this.$Progress.fail()
-            this.error = err.toString();
-            return;
-          }
+          value: this.web3.utils.toWei(amount + '', 'ether')
+        });
 
-          this.$Progress.finish()
+        callback && callback(hash);
 
-          this.addNewLog({
-            hash: hash,
-            createdAt: new Date(),
-            from: this.address,
-            to: toAddress,
-            value: this.web3.utils.toWei(amount + '', 'ether')
-          });
-
-          callback && callback(hash);
-
-          this.isProcessing = false;
-        })
+        this.isProcessing = false;
       })
     },
     addNewLog(log) {
