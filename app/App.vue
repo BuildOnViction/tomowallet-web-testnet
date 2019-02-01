@@ -273,37 +273,39 @@ export default {
 
       this.initWallet();
     },
-    async transfer({toAddress, amount, callback}) {
+    transfer({toAddress, amount, callback}) {
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
-      this.web3.eth.sendTransaction({
-        from: this.address,
-        to: toAddress,
-        value: this.web3.utils.toWei(amount + '', 'ether'),
-        gasLimit: 21000,
-        gasPrice: await web3.eth.getGasPrice()
-      }, (err, hash) => {
-        console.log(err, hash);
-        if (err) {
-          this.$Progress.fail()
-          this.error = err.toString();
-          return;
-        }
-
-        this.$Progress.finish()
-
-        this.addNewLog({
-          hash: hash,
-          createdAt: new Date(),
+      this.web3.eth.getGasPrice(gasPrice => {
+        this.web3.eth.sendTransaction({
           from: this.address,
           to: toAddress,
-          value: this.web3.utils.toWei(amount + '', 'ether')
-        });
+          value: this.web3.utils.toWei(amount + '', 'ether'),
+          gasLimit: 21000,
+          gasPrice: gasPrice
+        }, (err, hash) => {
+          console.log(err, hash);
+          if (err) {
+            this.$Progress.fail()
+            this.error = err.toString();
+            return;
+          }
 
-        callback && callback(hash);
+          this.$Progress.finish()
 
-        this.isProcessing = false;
+          this.addNewLog({
+            hash: hash,
+            createdAt: new Date(),
+            from: this.address,
+            to: toAddress,
+            value: this.web3.utils.toWei(amount + '', 'ether')
+          });
+
+          callback && callback(hash);
+
+          this.isProcessing = false;
+        })
       })
     },
     addNewLog(log) {
