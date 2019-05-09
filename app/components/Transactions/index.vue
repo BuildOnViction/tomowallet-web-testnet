@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="logs && logs.length > 0">
-      <Item v-for="e in (logs || [])" :key="e.hash" :data="e"
+      <Item v-for="e in (logs || [])" :key="e.hash" :data="e" :explorer="explorer"
         :isIn="(e.to || '').toLowerCase() === (address || '').toLowerCase()"/>
     </div>
     <div v-else class="empty">
@@ -14,7 +14,7 @@
 <script>
 import Item from './Item';
 export default {
-  props: ['logs', 'address'],
+  props: ['logs', 'address', 'explorer'],
   components: {
     Item
   }

@@ -24,7 +24,7 @@
 <script>
 import BigNumber from 'bignumber.js'
 export default {
-  props: ['isIn', 'data'],
+  props: ['isIn', 'data', 'explorer'],
   computed: {
     isProcessing() {
       var now = new Date().getTime();
@@ -60,7 +60,7 @@ export default {
     },
     openTomoScan() {
       if (!this.getSelected()) {
-        window.open(`https://scan.testnet.tomochain.com/txs/${this.data.hash}`, '_blank')
+          window.open(`${this.explorer}/txs/${this.data.hash}`, '_blank')
       }
     }
   }

@@ -21,10 +21,12 @@
           :address="address"
           :balance="balance"
           :isSending="isProcessing"
+          :explorer="explorer"
           :error="error"
           @sendClick="transfer"/>
         <Transactions v-else-if="mainContent === 'transactions'"
           :logs="logs"
+          :explorer="explorer"
           :address="address"/>
         <EarnTomo
           v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'"
@@ -122,7 +124,8 @@ export default {
       rawBalance: 0,
       error: '',
       isProcessing: false,
-      logs: logs
+      logs: logs,
+      explorer: ''
     };
   },
   computed: {
@@ -149,6 +152,7 @@ export default {
   created() {
     axios.get('/api/config').then(({data}) => {
         let url = data.rpc;
+        this.explorer = data.explorer;
         this.web3 = new Web3(url);
 
         if (this.address) {

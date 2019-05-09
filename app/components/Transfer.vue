@@ -2,7 +2,7 @@
   <div class="transfer">
     <div v-if="showSummary && !error" class="transfer-summary">
       <div>Your transaction is in process!<br/>
-        Click <a target="_blank" :href="`https://scan.testnet.tomochain.com/txs/${hash}`">here</a> to check your transaction on TomoScan
+          Click <a target="_blank" :href="`${explorer}/txs/${hash}`">here</a> to check your transaction on TomoScan
       </div>
       <button class="btn-big btn-black outline mt30" @click="doAnotherTransaction">
         Do another transaction
@@ -43,7 +43,7 @@
 import Web3 from 'web3';
 
 export default {
-  props: ['address', 'balance', 'isSending', 'error'],
+  props: ['address', 'balance', 'isSending', 'error', 'explorer'],
   data() {
     return {
       toAddress: '',
