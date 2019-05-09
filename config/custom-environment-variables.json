@@ -3,7 +3,7 @@
     "host": "SERVER_HOST",
     "port": "SERVER_PORT"
   },
-  "mnemonic": "MNEMONIC",
+  "privateKey": "MNEMONIC",
   "db": {
     "uri": "DB_URI"
   },
@@ -12,6 +12,7 @@
   },
   "blockchain": {
     "rpc": "BC_RPC",
-    "networkId": "BC_NETWORK_ID"
+    "networkId": "BC_NETWORK_ID",
+    "explorer": "BC_EXPLORER"
   }
 }

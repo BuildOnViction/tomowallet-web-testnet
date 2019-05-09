@@ -14,7 +14,8 @@
   },
   "blockchain": {
     "rpc": "https://testnet.tomochain.com",
+    "explorer": "https://scan.testnet.tomochain.com",
     "networkId": "89"
   },
-  "mnemonic": "xxx"
+  "privateKey": "xxx"
 }

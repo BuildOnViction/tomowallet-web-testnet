@@ -147,18 +147,20 @@ export default {
     }
   },
   created() {
-    let url = 'https://testnet.tomochain.com';
-    this.web3 = new Web3(url);
+    axios.get('/api/config').then(({data}) => {
+        let url = data.rpc;
+        this.web3 = new Web3(url);
 
-    if (this.address) {
-      this.initWallet();
-      if (this.logs && this.logs.length > 0) {
-        this.mainContent = 'transactions';
-      }
-      else {
-        this.mainContent = 'transfer';
-      }
-    }
+        if (this.address) {
+          this.initWallet();
+          if (this.logs && this.logs.length > 0) {
+            this.mainContent = 'transactions';
+          }
+          else {
+            this.mainContent = 'transfer';
+          }
+        }
+    })
   },
   methods: {
     changeMainContent(v) {
@@ -169,27 +171,29 @@ export default {
       var elmnt = document.getElementById("mainContainer");
       scrollTo(elmnt.offsetHeight, 500);
     },
-    initWallet() {
-      let url = 'https://testnet.tomochain.com';
-      const walletProvider =
-        (this.privateKey.indexOf(' ') >= 0)
-        ? new HDWalletProvider(this.privateKey, url)
-        : new PrivateKeyProvider(this.privateKey, url)
+    initWallet(url) {
+      axios.get('/api/config').then(({data}) => {
+          let url = data.rpc;
+          const walletProvider =
+            (this.privateKey.indexOf(' ') >= 0)
+            ? new HDWalletProvider(this.privateKey, url)
+            : new PrivateKeyProvider(this.privateKey, url)
 
-      this.web3.eth.setProvider(walletProvider);
-      this.web3.eth.defaultAccount = this.address;
-      axios.post('/api/wallets/create/' + this.address)
-      .then(({data}) => {
-        if (data.reward) {
-          localStorage.requestedTomo = 'true';
-          this.isReward = true;
-        }
+          this.web3.eth.setProvider(walletProvider);
+          this.web3.eth.defaultAccount = this.address;
+          axios.post('/api/wallets/create/' + this.address)
+          .then(({data}) => {
+            if (data.reward) {
+              localStorage.requestedTomo = 'true';
+              this.isReward = true;
+            }
+          })
+          this.getTransactions();
+          this.getBalance();
+          setInterval(() => {
+            this.getBalance();
+          }, 1000);
       })
-      this.getTransactions();
-      this.getBalance();
-      setInterval(() => {
-        this.getBalance();
-      }, 1000);
     },
     getBalance() {
       this.web3.eth.getBalance(this.address, (err, v) => {

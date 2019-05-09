@@ -7,7 +7,6 @@
 		"lint": "./node_modules/.bin/eslint --cache ./",
 		"build": "node ./node_modules/webpack/bin/webpack.js",
 		"dev": "npm run webpack & npm run nodemon",
-		"contracts": "truffle deploy --reset --network sidechain --compile-all && truffle deploy --reset --network mainchain --compile-all",
 		"nodemon": "./node_modules/.bin/nodemon index.js",
 		"start": "node index.js",
 		"webpack": "node ./node_modules/webpack/bin/webpack.js -d --w"
