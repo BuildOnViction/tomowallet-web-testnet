@@ -3,7 +3,7 @@
     "host": "SERVER_HOST",
     "port": "SERVER_PORT"
   },
-  "privateKey": "MNEMONIC",
+  "privateKey": "PRIVATEKEY",
   "db": {
     "uri": "DB_URI"
   },
