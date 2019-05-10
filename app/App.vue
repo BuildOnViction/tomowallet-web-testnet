@@ -46,8 +46,6 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import Web3 from 'web3'
 import BigNumber from 'bignumber.js';
 import EthereumTx from 'ethereumjs-tx';
-import HDWalletProvider from 'truffle-hdwallet-provider'
-import PrivateKeyProvider from 'truffle-privatekey-provider'
 
 import Welcome from './components/Welcome';
 import Account from './components/Account';
@@ -178,13 +176,11 @@ export default {
     initWallet(url) {
       axios.get('/api/config').then(({data}) => {
           let url = data.rpc;
-          const walletProvider =
-            (this.privateKey.indexOf(' ') >= 0)
-            ? new HDWalletProvider(this.privateKey, url)
-            : new PrivateKeyProvider(this.privateKey, url)
+          const account = this.web3.eth.accounts.privateKeyToAccount('0x' + this.privateKey)
+          this.web3.eth.accounts.wallet.add(account)
+          this.web3.eth.defaultAccount = account.address
+          this.address = account.address
 
-          this.web3.eth.setProvider(walletProvider);
-          this.web3.eth.defaultAccount = this.address;
           axios.post('/api/wallets/create/' + this.address)
           .then(({data}) => {
             if (data.reward) {
