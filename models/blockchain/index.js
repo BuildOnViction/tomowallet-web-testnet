@@ -4,7 +4,7 @@ const config = require('config')
 const HDWalletProvider = require('truffle-privatekey-provider')
 const Web3 = require('web3')
 
-const provider = new HDWalletProvider(config.get('privateKey'), config.get('blockchain.rpc'))
+const provider = new HDWalletProvider(config.get('privateKey'), config.get('blockchain.privateRpc'))
 const web3 = new Web3(provider)
 
 process.on('uncaughtException', function (err) {

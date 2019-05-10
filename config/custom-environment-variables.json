@@ -12,6 +12,7 @@
   },
   "blockchain": {
     "rpc": "BC_RPC",
+    "privateRpc": "BC_PRIVATE_RPC",
     "networkId": "BC_NETWORK_ID",
     "explorer": "BC_EXPLORER"
   }
