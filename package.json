@@ -73,8 +73,5 @@
 		"vue-progressbar": "^0.7.5",
 		"web3": "^1.0.0-beta.35",
 		"websocket": "^1.0.26"
-	},
-    "browser": {
-        "child_process": false, "net": false
-    }
+	}
 }
