@@ -16,7 +16,7 @@
         <div :style="{opacity: errorAddress ? 1 : 0}" class="transfer-error text-right mt5">{{errorAddress || '&nbsp;'}}</div>
       </div>
 
-      <div class="fs16 mt30">Amount (Not include Tx Fee: 0.000000000000021 TOMO)</div>
+      <div class="fs16 mt30">Amount (Not include Tx Fee: 0.005 TOMO)</div>
       <div>
         <input
           ref="amountInput"
