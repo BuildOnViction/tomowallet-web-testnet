@@ -14,7 +14,7 @@
   },
   "rules": {
     "promise/catch-or-return": "warn",
-    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "indent": ["warn", 4],
     "no-trailing-spaces": 1,
     "semi": ["warn", "never"],
     "eol-last": 1,

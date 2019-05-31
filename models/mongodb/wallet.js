@@ -5,11 +5,11 @@ var Schema = mongoose.Schema
 
 // Define User Schema
 var Wallet = new Schema({
-  walletAddress: {
-    type: String,
-    unique: true
-  },
-  reward: Number
+    walletAddress: {
+        type: String,
+        unique: true
+    },
+    reward: Number
 }, {timestamps: true})
 
 Wallet.statics = {}

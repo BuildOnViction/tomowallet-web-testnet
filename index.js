@@ -21,7 +21,7 @@ app.use('/assets', express.static('./build'))
 app.use('/media', express.static('./media'))
 app.use(require('./apis'))
 app.use('/', function(req, res) {
-  res.render('app')
+    res.render('app')
 })
 
 // error handler
@@ -30,14 +30,14 @@ require('./crawls')()
 
 // start server
 server.listen(config.get('server.port'), config.get('server.host'), function () {
-  const host = server.address().address
-  const port = server.address().port
-  console.info('Server start at http://%s:%s', host, port)
+    const host = server.address().address
+    const port = server.address().port
+    console.info('Server start at http://%s:%s', host, port)
 })
 
 process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err)
-  process.exit(1)
+    console.log('Caught exception: ' + err)
+    process.exit(1)
 })
 
 module.exports = app

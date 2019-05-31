@@ -8,10 +8,10 @@ const provider = new HDWalletProvider(config.get('privateKey'), config.get('bloc
 const web3 = new Web3(provider)
 
 process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err)
-  process.exit(1)
+    console.log('Caught exception: ' + err)
+    process.exit(1)
 })
 
 module.exports = {
-  web3
+    web3
 }
