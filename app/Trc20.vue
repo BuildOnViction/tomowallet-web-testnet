@@ -198,7 +198,7 @@ export default {
                 this.balance = parseFloat(v) / (10 ** 18);
                 this.fee = "0.00025"
             })
-            this.web3.eth.getBalance(web3.eth.defaultAccount).then(v => {
+            this.web3.eth.getBalance(this.address).then(v => {
                 v = new BigNumber(v);
                 this.tomoBalance = v.dividedBy(1e+18).toString(10);
             })
