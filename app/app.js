@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Tomo from './Tomo.vue'
 import Trc21 from './Trc21.vue'
+import Trc20 from './Trc20.vue'
 import './style.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArrowRight, faInfo, faKey, faCopy, faHistory, faArrowAltCircleRight, faCoins, faSignOutAlt, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -41,7 +42,10 @@ const router = new VueRouter({
             path: '/', component: Tomo
         },
         {
-            path: '/:address', component: Trc21
+            path: '/trc21/:address', component: Trc21
+        },
+        {
+            path: '/trc20/:address', component: Trc20
         }
     ]
 })

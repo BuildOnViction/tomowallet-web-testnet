@@ -8,7 +8,7 @@
           <animated-number
           :value="balance"
           :formatValue="formatBalance"
-          :duration="500"
+          :duration="1000"
           />
         </div>
         <div class="account-balance-symbol text-center">{{ symbol }}</div>
@@ -18,7 +18,7 @@
           <animated-number
           :value="tomoBalance"
           :formatValue="formatBalance"
-          :duration="500"
+          :duration="1000"
           />
         </div>
         <div class="account-balance-symbol text-center">TOMO</div>
@@ -78,6 +78,7 @@ export default {
         case 9: return 35;
         case 10: return 35;
       }
+      return 50;
     }
   },
   methods: {
@@ -130,7 +131,7 @@ export default {
           transform translateY(-50%)
 
       &-number
-        font-size 100px
+        font-size 60px
         font-weight 80
         line-height 1
         transition all 0.3s

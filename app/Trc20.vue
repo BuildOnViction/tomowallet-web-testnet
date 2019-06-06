@@ -42,14 +42,14 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import Web3 from 'web3'
 import BigNumber from 'bignumber.js';
 import EthereumTx from 'ethereumjs-tx';
-import trc21Abi from './TRC21.json';
+import trc20Abi from './TRC21.json';
 
 import Welcome from './components/Welcome';
-import Account from './components/trc21/Account';
-import MainContainer from './components/trc21/MainContainer';
+import Account from './components/trc20/Account';
+import MainContainer from './components/trc20/MainContainer';
 import Detail from './components/Detail';
-import Transfer from './components/trc21/Transfer';
-import Transactions from './components/trc21/Transactions';
+import Transfer from './components/trc20/Transfer';
+import Transactions from './components/trc20/Transactions';
 
 function scrollTo(to, duration) {
     const element = document.scrollingElement || document.documentElement;
@@ -110,7 +110,7 @@ export default {
       mainContent: 'transactions',
       isReward: !!localStorage.requestedTomo || false,
       web3: {},
-      trc21: {},
+      trc20: {},
       address: address,
       privateKey: privateKey,
       mnemonic: mnemonic,
@@ -148,7 +148,7 @@ export default {
         let url = data.rpc;
         this.explorer = data.explorer;
         this.web3 = new Web3(url);
-        this.trc21 = new this.web3.eth.Contract(trc21Abi, this.$route.params.address, { gas: 2000000, gasPrice: 0 })
+        this.trc20 = new this.web3.eth.Contract(trc20Abi, this.$route.params.address, { gas: 2000000, gasPrice: 0 })
         if (this.address) {
           this.initWallet();
           if (this.logs && this.logs.length > 0) {
@@ -192,19 +192,15 @@ export default {
       })
     },
     getTokenInfo() {
-        this.trc21.methods.symbol().call().then(data => {
+        this.trc20.methods.symbol().call().then(data => {
             this.symbol = data;
-            this.trc21.methods.balanceOf(this.address).call().then(v => {
+            this.trc20.methods.balanceOf(this.address).call().then(v => {
                 this.balance = parseFloat(v) / (10 ** 18);
-                if (this.trc21.methods.estimateFee(0)) {
-                    this.trc21.methods.estimateFee(0).call().then(v => {
-                        this.fee = parseFloat(v) / (10 ** 18);
-                    })
-                }
-                this.web3.eth.getBalance(web3.eth.defaultAccount).then(v => {
-                    v = new BigNumber(v);
-                    this.tomoBalance = v.dividedBy(1e+18).toString(10);
-                })
+                this.fee = "0.00025"
+            })
+            this.web3.eth.getBalance(web3.eth.defaultAccount).then(v => {
+                v = new BigNumber(v);
+                this.tomoBalance = v.dividedBy(1e+18).toString(10);
             })
         })
     },
@@ -280,7 +276,7 @@ export default {
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
-        this.trc21.methods.transfer(toAddress, this.web3.utils.toWei(amount + '', 'ether'))
+        this.trc20.methods.transfer(toAddress, this.web3.utils.toWei(amount + '', 'ether'))
             .send({ from: this.address, gas: 2000000 })
             .then(receipt => {
                 this.$Progress.finish()
