@@ -120,7 +120,7 @@ export default {
         position relative
 
       &-container
-        margin-top 30px
+        margin-top 20px
         @media(max-width 767px)
           position absolute
           top calc(50% + 20px)
