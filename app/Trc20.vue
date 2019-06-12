@@ -115,6 +115,7 @@ export default {
       privateKey: privateKey,
       mnemonic: mnemonic,
       balance: 0,
+      decimals: 0,
       tomoBalance: 0,
       fee: 0,
       symbol: '',
@@ -196,6 +197,7 @@ export default {
             this.symbol = data;
             this.trc20.methods.balanceOf(this.address).call().then(v => {
                 this.trc20.methods.decimals().call().then(d => {
+                    this.decimals = parseInt(d)
                     this.balance = parseFloat(v) / (10 ** parseInt(d));
                     this.fee = "0.00025"
                 })
@@ -275,10 +277,12 @@ export default {
       this.initWallet();
     },
     transfer({toAddress, amount, callback}) {
+      amount = new BigNumber(amount);
+      amount = amount.multipliedBy(10 ** this.decimals).toString(10);
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
-        this.trc20.methods.transfer(toAddress, this.web3.utils.toWei(amount + '', 'ether'))
+        this.trc20.methods.transfer(toAddress, amount)
             .send({ from: this.address, gas: 2000000 })
             .then(receipt => {
                 this.$Progress.finish()
