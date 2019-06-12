@@ -195,8 +195,10 @@ export default {
         this.trc20.methods.symbol().call().then(data => {
             this.symbol = data;
             this.trc20.methods.balanceOf(this.address).call().then(v => {
-                this.balance = parseFloat(v) / (10 ** 18);
-                this.fee = "0.00025"
+                this.trc20.methods.decimals().call().then(d => {
+                    this.balance = parseFloat(v) / (10 ** parseInt(d));
+                    this.fee = "0.00025"
+                })
             })
             this.web3.eth.getBalance(this.address).then(v => {
                 v = new BigNumber(v);

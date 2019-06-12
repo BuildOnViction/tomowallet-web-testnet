@@ -195,15 +195,17 @@ export default {
         this.trc21.methods.symbol().call().then(data => {
             this.symbol = data;
             this.trc21.methods.balanceOf(this.address).call().then(v => {
-                this.balance = parseFloat(v) / (10 ** 18);
-                if (this.trc21.methods.estimateFee(0)) {
-                    this.trc21.methods.estimateFee(0).call().then(v => {
-                        this.fee = parseFloat(v) / (10 ** 18);
+                this.trc21.methods.decimals().call().then(d => {
+                    this.balance = parseFloat(v) / (10 ** parseInt(d));
+                    if (this.trc21.methods.estimateFee(0)) {
+                        this.trc21.methods.estimateFee(0).call().then(v => {
+                            this.fee = parseFloat(v) / (10 ** parseInt(d));
+                        })
+                    }
+                    this.web3.eth.getBalance(this.address).then(v => {
+                        v = new BigNumber(v);
+                        this.tomoBalance = v.dividedBy(1e+18).toString(10);
                     })
-                }
-                this.web3.eth.getBalance(this.address).then(v => {
-                    v = new BigNumber(v);
-                    this.tomoBalance = v.dividedBy(1e+18).toString(10);
                 })
             })
         })
