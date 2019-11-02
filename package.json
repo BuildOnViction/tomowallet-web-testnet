@@ -65,7 +65,7 @@
 		"i": "^0.3.6",
 		"kue": "^0.11.6",
 		"lodash": "^4.17.10",
-		"mongoose": "^4.13.7",
+		"mongoose": "^5.7.5",
 		"npm": "^6.4.0",
 		"redis": "^2.8.0",
 		"truffle-hdwallet-provider": "^1.0.9",
