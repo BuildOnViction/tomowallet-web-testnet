@@ -2,7 +2,6 @@
   <div class="account">
     <Address :address="address" @detailClick="$emit('detailClick')" />
     <div class="account-balance">
-      <div class="fs15 text-right" style="color: rgba(255, 152, 0, 0.6)">Network: <b>TomoChain Testnet</b></div>
       <div class="account-balance-container">
         <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
           <animated-number

@@ -16,7 +16,7 @@
     justify-content: center;
     @media(min-width: 768px) {
       height: 100vh;
-      min-height: 640px;
+      min-height: 800px;
     }
 
     .maincontent

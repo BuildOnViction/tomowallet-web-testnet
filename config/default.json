@@ -4,7 +4,7 @@
     "port": 3000
   },
   "db": {
-    "uri": "mongodb://mongodb:27017/wallets"
+    "uri": "mongodb://localhost:27017/wallets"
   },
   "redis": {
       "host": "redis",
@@ -13,9 +13,9 @@
       "prefix": "ToMoWallet"
   },
   "blockchain": {
-    "rpc": "https://testnet.tomochain.com",
-    "privateRpc": "https://testnet.tomochain.com",
-    "explorer": "https://scan.testnet.tomochain.com",
+    "rpc": "http://206.189.39.242:8545",
+    "privateRpc": "http://206.189.39.242:8545",
+    "explorer": "http://scan.206.189.39.242:8545",
     "networkId": "89"
   },
   "privateKey": "xxx"

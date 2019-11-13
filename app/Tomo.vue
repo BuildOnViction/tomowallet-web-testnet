@@ -5,8 +5,11 @@
       @importByPrivateKey="importWallet"/>
     <div v-else class="maincontent">
       <Account :address="address" :balance="balance"
+        :privacyBalance="privacyBalance"
+        :privacyaddress="addresses.pubAdr"
         @detailClick="changeMainContent('detail')"
         @transferClick="changeMainContent('transfer')"
+        @depositClick="changeMainContent('deposit')"
         @transactionsClick="changeMainContent('transactions')"
         @earnClick="changeMainContent('earntomo')"/>
 
@@ -15,6 +18,7 @@
           :address="address"
           :mnemonic="mnemonic"
           :privateKey="privateKey"/>
+          
         <Transfer
           ref="transfer"
           v-else-if="mainContent === 'transfer'"
@@ -24,13 +28,20 @@
           :explorer="explorer"
           :error="error"
           @sendClick="transfer"/>
+        
+        <Deposit
+          ref="deposit"
+          v-else-if="mainContent === 'deposit'"
+          :address="address"
+          :balance="balance"
+          :isSending="isProcessing"
+          :explorer="explorer"
+          :error="error"
+          @depoClick="deposit"/>
+          
         <Transactions v-else-if="mainContent === 'transactions'"
           :logs="logs"
           :explorer="explorer"
-          :address="address"/>
-        <EarnTomo
-          v-else-if="mainContent === 'earntomo' || mainContent === 'welcome'"
-          :isReward="isReward"
           :address="address"/>
       </MainContainer>
     </div>
@@ -51,9 +62,13 @@ import Welcome from './components/Welcome';
 import Account from './components/Account';
 import MainContainer from './components/MainContainer';
 import Detail from './components/Detail';
+import Deposit from './components/Deposit';
 import Transfer from './components/Transfer';
 import Transactions from './components/Transactions';
 import EarnTomo from './components/EarnTomo';
+import {Address as AdUtil, Wallet, Crypto, UTXO} from '../../stealth/dist';
+import * as _ from 'lodash';
+import CONFIG from './config.json';
 
 function scrollTo(to, duration) {
     const element = document.scrollingElement || document.documentElement;
@@ -88,6 +103,7 @@ export default {
     MainContainer,
     Detail,
     Transfer,
+    Deposit,
     Transactions,
     EarnTomo
   },
@@ -103,6 +119,9 @@ export default {
       mnemonic = localWallet.mnemonic;
     }
 
+    const addresses = AdUtil.generateKeys(
+      privateKey
+    );
     var logs = [];
     try {
       logs = JSON.parse(localStorage.logs) || [];
@@ -123,9 +142,44 @@ export default {
       error: '',
       isProcessing: false,
       logs: logs,
-      explorer: ''
+      explorer: '',
+      addresses,
+      privacyBalance: null,
+      privacyWallet: new Wallet(privateKey, {
+        ABI: CONFIG.PRIVACY_ABI,
+        ADDRESS: CONFIG.PRIVACY_SMART_CONTRACT_ADDRESS,
+        SOCKET_END_POINT: CONFIG.SOCKET_END_POINT,
+        gas: 2000000,
+        gasPrice: 2500000,
+        RPC_END_POINT: CONFIG.RPC_END_POINT,
+      }, address, localStorage)
     };
   },
+  mounted() {
+    if (!this.addresses) return;
+
+    this.privacyWallet.on("NEW_UTXO", () => {
+      console.log("money come ", this.privacyWallet.balance.toHex());
+      this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+    });
+
+    const _self = this;
+    this.privacyBalance = null;
+    let last20Utxos;
+    this.privacyWallet.restoreWalletState();
+    const receiver = AdUtil.generateKeys(CONFIG.WALLETS[1].privateKey);
+
+    if (this.privacyWallet.utxos === null) {
+      this.privacyWallet.scan().then((res) => {
+        _self.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+      }).catch(ex => {
+        console.log(ex);
+      })
+    } else {
+      this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+    }
+  },
+
   computed: {
     mainContainerHeader() {
       if (this.mainContent === 'detail') {
@@ -133,6 +187,9 @@ export default {
       }
       else if (this.mainContent === 'transfer') {
         return 'Transfer TOMO'
+      }
+      else if (this.mainContent === 'deposit') {
+        return 'Deposit to TOMO privacy'
       }
       else if (this.mainContent === 'transactions') {
         return 'Transactions'
@@ -281,34 +338,82 @@ export default {
       if (this.isProcessing) return;
       this.$Progress.start()
       this.isProcessing = true;
-      this.web3.eth.sendTransaction({
-        from: this.address,
-        to: toAddress,
-        value: this.web3.utils.toWei(amount + '', 'ether'),
-        gasLimit: 21000,
-        gasPrice: 250000000
-      }, (err, hash) => {
-        console.log(err, hash);
-        if (err) {
-          this.$Progress.fail()
-          this.error = err.toString();
-          return;
-        }
 
+      if (Web3.utils.isAddress(toAddress)) {
+        console.log("withdrawing ...");
+        return this.withdraw({
+          toAddress, amount, callback
+        });
+      };
+
+      this.privacyWallet.send(toAddress, Web3.utils.toWei(amount + '', 'ether')).then((res) => {
         this.$Progress.finish()
 
-        this.addNewLog({
-          hash: hash,
-          createdAt: new Date(),
-          from: this.address,
-          to: toAddress,
-          value: this.web3.utils.toWei(amount + '', 'ether')
-        });
-
-        callback && callback(hash);
+        callback && callback();
 
         this.isProcessing = false;
+        this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+      }).catch(ex => {
+        this.$Progress.fail()
+        this.error = ex.toString();
+        console.log("private send exception ", ex);
+      });
+    },
+    deposit({amount, callback}) {
+      if (this.isProcessing) return;
+
+      this.$Progress.start()
+      this.isProcessing = true;
+
+      const _self = this;
+
+      this.privacyWallet.deposit(
+        this.web3.utils.toWei(amount + '', 'ether'),
+      ).then((utxos) => {
+        this.storeUTXO([utxos.utxo]);
+
+        _self.$Progress.finish();
+        _self.isProcessing = false;
+        this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+
+        console.log(this.privacyBalance);
       })
+      .catch(ex => {
+        console.log("Ex ", ex);
+        _self.$Progress.fail()
+        _self.error = ex.toString();
+      })
+    },
+    withdraw({toAddress, amount, callback}) {
+      // if (this.isProcessing) return;
+      this.$Progress.start()
+      this.isProcessing = true;
+      try {
+          this.privacyWallet.withdraw(toAddress, this.web3.utils.toWei(amount + '', 'ether')).then((res) => {
+            this.$Progress.finish()
+            console.log("res ", res);
+            callback && callback();
+            this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+            this.isProcessing = false;
+          }).catch(ex => {
+            this.$Progress.fail()
+            this.error = ex.toString();
+            console.log("withdraw exception ", ex);
+          });
+      } catch(ex){
+        this.$Progress.fail()
+        this.error = ex.toString();
+        console.log("withdraw exception ", ex);
+      };
+    },
+    storeUTXO(rawUtxos) {
+      // const utxos = localStorage.getItem("UTXOS") ? JSON.parse(localStorage.getItem("UTXOS")) : null;
+      // if (utxos) {
+      //   utxos.push(...rawUtxos);
+      //   localStorage.setItem("UTXOS", JSON.stringify(utxos));
+      // } else {
+      //   localStorage.setItem("UTXOS", JSON.stringify(rawUtxos));
+      // }
     },
     addNewLog(log) {
       this.logs.unshift(log);

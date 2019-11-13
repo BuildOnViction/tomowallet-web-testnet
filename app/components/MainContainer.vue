@@ -39,6 +39,6 @@ export default {
       padding-top: 15px;
       padding-bottom: 15px;
       @media(min-width: 768px) {
-        height: 540px;
+        height: 700px;
       }
 </style>

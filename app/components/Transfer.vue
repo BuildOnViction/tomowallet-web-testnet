@@ -67,10 +67,10 @@ export default {
         this.errorAddress = 'enter recipient address, please';
         return;
       }
-      if (!Web3.utils.isAddress(this.toAddress)) {
-        this.errorAddress = 'address is invalid, please try again';
-        return;
-      };
+      // if (!Web3.utils.isAddress(this.toAddress)) {
+      //   this.errorAddress = 'address is invalid, please try again';
+      //   return;
+      // };
 
       // if (this.toAddress === this.address) {
       //   this.errorAddress = 'recipient address is your, please try again';
@@ -95,10 +95,6 @@ export default {
         this.errorAmount = 'Value must be a number';
         return;
       }
-      if (this.amount <= 0 || this.amount > this.balance) {
-        this.errorAmount = `Value must be less than ${this.formatBalance()} and greater than 0`
-        return;
-      }
 
       this.errorAmount = '';
     },
@@ -113,16 +109,9 @@ export default {
         this.errorAddress = 'enter recipient address, please';
         return;
       }
-      if (!Web3.utils.isAddress(this.toAddress)) {
-        this.errorAddress = 'address is invalid, please try again';
-        return;
-      };
+
       if (!this.amount) {
         this.errorAmount = 'enter amount, please';
-        return;
-      }
-      if (isNaN(this.amount) || this.amount <= 0 || this.amount > this.balance) {
-        this.errorAmount = `Value must be less than ${this.balance.toLocaleString()} and greater than 0`
         return;
       }
 

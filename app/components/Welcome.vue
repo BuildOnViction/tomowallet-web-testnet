@@ -4,7 +4,7 @@
       <img src="/media/logo.svg" width="50px" class="mb20"/>
     </div>
     <h1 class="white">Tomo Wallet</h1>
-    <div class="white">Network: Tomo testnet</div>
+    <div class="white">Network: Tomo privacy testnet</div>
     <div v-if="!isImporting">
       <div class="white text-align center mt50 mb50">
         This is a wallet for Tomochain testnet version. You can receive, send and earn some token to test. Don’t send any other tokens to this address.

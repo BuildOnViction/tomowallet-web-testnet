@@ -2,21 +2,33 @@
   <div class="account">
     <Address :address="address" @detailClick="$emit('detailClick')" />
     <div class="account-balance">
-      <div class="fs15 text-right" style="color: rgba(255, 152, 0, 0.6)">Network: <b>Tomo Testnet</b></div>
-      <div class="account-balance-container">
-        <div class="account-balance-number text-center" :style="{'font-size': `${balanceSize}px`}">
+      <div class="" style="margin-top: 0px;">
+        <div class="account-balance-number text-center" :style="{'font-size': `20px`}">
           <animated-number
           :value="balance"
           :formatValue="formatBalance"
           :duration="500"
-          />
+          /> TOMO
         </div>
-        <div class="account-balance-symbol text-center">TOMO</div>
+      </div>
+      <div class="" style="margin-top: 0px;">
+        <div class="account-balance-number text-center" :style="{'font-size': `20px`}">
+          <h5 v-if="privacyBalance === null">Scanning balance ...</h5>
+          <animated-number
+          v-else
+          :value="privacyBalance"
+          :duration="500"
+          /> TOMOP
+        </div>
+        
       </div>
     </div>
     <div class="menu">
       <div class="menu-item" @click="$emit('transferClick')">
         <fa icon="arrow-alt-circle-right" class="fs25"/> <span class="ml30">Transfer</span>
+      </div>
+      <div class="menu-item" @click="$emit('depositClick')">
+         <span class="ml30">Deposit</span>
       </div>
       <div class="menu-line"></div>
       <div class="menu-item" @click="$emit('transactionsClick')">
@@ -35,11 +47,12 @@ import Address from './Address';
 import AnimatedNumber from "animated-number-vue";
 
 export default {
-  props: ['address', 'balance'],
+  props: ['address', 'balance', 'privacyBalance'],
   components: {
     Address,
     AnimatedNumber
   },
+
   computed: {
     balanceSize() {
       var s = this.formatBalance(this.balance);
@@ -58,8 +71,11 @@ export default {
       return 50;
     }
   },
+  
+
   methods: {
     formatBalance(value) {
+      console.log("balance ", this.balance);
       if(this.balance === 0) {
         return '0';
       }
@@ -69,7 +85,8 @@ export default {
       }
       value = Math.floor(value * 100) / 100
       return value.toFixed(2);
-    }
+    },
+    
   }
 }
 </script>
