@@ -49,7 +49,7 @@
 
 import QRCode from '@xkeshi/vue-qrcode';
 import ClipboardJS from 'clipboard';
-import {Address, Wallet} from '../../../stealth/dist';
+import {Address, Wallet} from 'tomoprivacyjs';
 
 console.log (Address);
 console.log(Wallet);

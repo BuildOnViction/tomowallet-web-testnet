@@ -66,7 +66,7 @@ import Deposit from './components/Deposit';
 import Transfer from './components/Transfer';
 import Transactions from './components/Transactions';
 import EarnTomo from './components/EarnTomo';
-import {Address as AdUtil, Wallet, Crypto, UTXO} from '../../stealth/dist';
+import {Address as AdUtil, Wallet, Crypto, UTXO} from 'tomoprivacyjs';
 import * as _ from 'lodash';
 import CONFIG from './config.json';
 
