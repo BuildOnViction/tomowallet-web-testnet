@@ -15,7 +15,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@xkeshi/vue-qrcode": "^0.3.0",
-		"axios": "^0.17.1",
+		"axios": "^0.19.0",
 		"babel-cli": "^6.22.2",
 		"babel-core": "^6.22.1",
 		"babel-eslint": "^6.1.2",
@@ -43,7 +43,7 @@
 		"vue-router": "^3.0.1",
 		"vue-template-compiler": "^2.5.9",
 		"webpack": "^2.2.1",
-		"webpack-dev-server": "^2.3.0"
+		"webpack-dev-server": "^2.11.5"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^1.2.2",
@@ -64,11 +64,11 @@
 		"express-validator": "^4.3.0",
 		"i": "^0.3.6",
 		"kue": "^0.11.6",
-		"lodash": "^4.17.10",
+		"lodash": "^4.17.15",
 		"mongoose": "^4.13.7",
-		"npm": "^6.4.0",
+		"npm": "^6.13.1",
 		"redis": "^2.8.0",
-		"tomoprivacyjs": "^0.3.3",
+		"tomoprivacyjs": "^0.3.7",
 		"truffle-hdwallet-provider": "^1.0.9",
 		"url-parse": "^1.4.3",
 		"vue-progressbar": "^0.7.5",

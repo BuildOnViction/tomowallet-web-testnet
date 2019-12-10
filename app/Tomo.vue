@@ -129,7 +129,7 @@ export default {
     catch (ex) {
 
     }
-
+    console.log("CONFIG.PRIVACY_SMART_CONTRACT_ADDRESS ", CONFIG.PRIVACY_SMART_CONTRACT_ADDRESS);
     return {
       mainContent: 'transactions',
       isReward: !!localStorage.requestedTomo || false,
@@ -159,8 +159,24 @@ export default {
     if (!this.addresses) return;
 
     this.privacyWallet.on("NEW_UTXO", () => {
-      console.log("money come ", this.privacyWallet.balance.toHex());
-      this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+      console.log("money come ", this.privacyWallet.balance.toString(10));
+      this.privacyBalance = this.privacyWallet.decimalBalance();
+    });
+
+    this.privacyWallet.on("START_SENDING", () => {
+      this.startTime = new Date();
+    });
+
+    this.privacyWallet.on("STOP_SENDING", () => {
+      console.log(
+        (this.startTime.valueOf() - new Date().valueOf())/ 1000
+      )
+    });
+
+    this.privacyWallet.on("FINISH_SENDING", () => {
+      console.log(
+        (this.startTime.valueOf() - new Date().valueOf())/ 1000
+      )
     });
 
     const _self = this;
@@ -171,12 +187,12 @@ export default {
 
     if (this.privacyWallet.utxos === null) {
       this.privacyWallet.scan().then((res) => {
-        _self.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+        _self.privacyBalance = _self.privacyWallet.decimalBalance();
       }).catch(ex => {
         console.log(ex);
       })
     } else {
-      this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+      this.privacyBalance = _self.privacyWallet.decimalBalance();
     }
   },
 
@@ -296,6 +312,7 @@ export default {
       });
 
       this.initWallet();
+      window.location.reload();
     },
     importWallet(privatekeyOrMnemonic) {
       this.mainContent = 'welcome';
@@ -333,6 +350,7 @@ export default {
       });
 
       this.initWallet();
+      window.location.reload();
     },
     transfer({toAddress, amount, callback}) {
       if (this.isProcessing) return;
@@ -352,9 +370,10 @@ export default {
         callback && callback();
 
         this.isProcessing = false;
-        this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+        this.privacyBalance = this.privacyWallet.decimalBalance();
       }).catch(ex => {
         this.$Progress.fail()
+        this.isProcessing = false;
         this.error = ex.toString();
         console.log("private send exception ", ex);
       });
@@ -374,13 +393,14 @@ export default {
 
         _self.$Progress.finish();
         _self.isProcessing = false;
-        this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + _self.privacyWallet.balance.toHex()));
+        this.privacyBalance = this.privacyWallet.decimalBalance();
 
         console.log(this.privacyBalance);
       })
       .catch(ex => {
         console.log("Ex ", ex);
         _self.$Progress.fail()
+        this.isProcessing = false;
         _self.error = ex.toString();
       })
     },
@@ -393,16 +413,18 @@ export default {
             this.$Progress.finish()
             console.log("res ", res);
             callback && callback();
-            this.privacyBalance = Web3.utils.fromWei(Web3.utils.hexToNumberString('0x' + this.privacyWallet.balance.toHex()));
+            this.privacyBalance = this.privacyWallet.decimalBalance();
             this.isProcessing = false;
           }).catch(ex => {
             this.$Progress.fail()
             this.error = ex.toString();
+            this.isProcessing = false;
             console.log("withdraw exception ", ex);
           });
       } catch(ex){
         this.$Progress.fail()
         this.error = ex.toString();
+        this.isProcessing = false;
         console.log("withdraw exception ", ex);
       };
     },

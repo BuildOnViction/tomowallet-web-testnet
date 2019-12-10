@@ -8,3 +8,5 @@ config/local.json
 node_modules
 box-img*.png
 build/
+go.mod
+go.sum
