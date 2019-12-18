@@ -66,7 +66,7 @@ import Deposit from './components/Deposit';
 import Transfer from './components/Transfer';
 import Transactions from './components/Transactions';
 import EarnTomo from './components/EarnTomo';
-import {Address as AdUtil, Wallet, Crypto, UTXO} from 'tomoprivacyjs';
+import {Address as AdUtil, Wallet, Crypto, UTXO} from '../../privacyjs/dist';
 import * as _ from 'lodash';
 import CONFIG from './config.json';
 
@@ -149,18 +149,24 @@ export default {
         ABI: CONFIG.PRIVACY_ABI,
         ADDRESS: CONFIG.PRIVACY_SMART_CONTRACT_ADDRESS,
         SOCKET_END_POINT: CONFIG.SOCKET_END_POINT,
-        gas: 2000000,
+        gas: 20000000,
         gasPrice: 2500000,
         RPC_END_POINT: CONFIG.RPC_END_POINT,
-      }, address, localStorage)
+      })
     };
   },
   mounted() {
     if (!this.addresses) return;
 
-    this.privacyWallet.on("NEW_UTXO", () => {
-      console.log("money come ", this.privacyWallet.balance.toString(10));
+    this.privacyWallet.on("ON_BALANCE_CHANGE", () => {
+      console.log(this.privacyWallet.state())
       this.privacyBalance = this.privacyWallet.decimalBalance();
+    });
+
+    this.privacyWallet.scan();
+
+    this.privacyWallet.on("NEW_TRANSACTION", (txData) => {
+      console.log("txData ", txData)
     });
 
     this.privacyWallet.on("START_SENDING", () => {
@@ -182,7 +188,7 @@ export default {
     const _self = this;
     this.privacyBalance = null;
     let last20Utxos;
-    this.privacyWallet.restoreWalletState();
+    // this.privacyWallet.restoreWalletState();
     const receiver = AdUtil.generateKeys(CONFIG.WALLETS[1].privateKey);
 
     if (this.privacyWallet.utxos === null) {

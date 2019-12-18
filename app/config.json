@@ -1,7 +1,7 @@
 {
     "RPC_END_POINT": "http://206.189.39.242:8545",
     "SOCKET_END_POINT": "ws://206.189.39.242:8546",
-    "PRIVACY_SMART_CONTRACT_ADDRESS": "0xCa93d3c93C0719E3bf44Ff0f82EAD478Fae98bC3",
+    "PRIVACY_SMART_CONTRACT_ADDRESS": "0x6242741bfB7aB2f55c92A99aD5141C5328362F14",
     "WALLETS": [
         {
             "privateKey": "06E77C26DD44F807A67DCE660B8F8D39209100678DEEEFD032214B7BF0A99F02",
@@ -262,53 +262,15 @@
         "name": "utxos",
         "outputs": [
           {
-            "components": [
-              {
-                "name": "yBit",
-                "type": "uint8"
-              },
-              {
-                "name": "x",
-                "type": "uint256"
-              }
-            ],
-            "name": "commitment",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "name": "yBit",
-                "type": "uint8"
-              },
-              {
-                "name": "x",
-                "type": "uint256"
-              }
-            ],
-            "name": "pubkey",
-            "type": "tuple"
-          },
-          {
             "name": "amount",
             "type": "uint256"
           },
           {
-            "components": [
-              {
-                "name": "yBit",
-                "type": "uint8"
-              },
-              {
-                "name": "x",
-                "type": "uint256"
-              }
-            ],
-            "name": "txPub",
-            "type": "tuple"
+            "name": "mask",
+            "type": "uint256"
           },
           {
-            "name": "mask",
+            "name": "txID",
             "type": "uint256"
           }
         ],
@@ -441,6 +403,11 @@
             "indexed": false,
             "name": "_index",
             "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "name": "_txIndex",
+            "type": "uint256"
           }
         ],
         "name": "NewUTXO",
@@ -461,6 +428,50 @@
           }
         ],
         "name": "TransactionFee",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "name": "_txIndex",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "name": "Xs",
+                "type": "uint256[3]"
+              },
+              {
+                "name": "YBits",
+                "type": "uint8[3]"
+              },
+              {
+                "name": "amount",
+                "type": "uint256[2]"
+              },
+              {
+                "name": "index",
+                "type": "uint256"
+              },
+              {
+                "name": "txIndex",
+                "type": "uint256"
+              }
+            ],
+            "indexed": false,
+            "name": "_utxos",
+            "type": "tuple[]"
+          },
+          {
+            "indexed": false,
+            "name": "_data",
+            "type": "bytes1[137]"
+          }
+        ],
+        "name": "NewTransaction",
         "type": "event"
       },
       {
@@ -564,6 +575,10 @@
           {
             "name": "_encodedMask",
             "type": "uint256"
+          },
+          {
+            "name": "_data",
+            "type": "bytes1[137]"
           }
         ],
         "name": "deposit",
@@ -594,6 +609,10 @@
           {
             "name": "_bp",
             "type": "bytes"
+          },
+          {
+            "name": "_data",
+            "type": "bytes1[137]"
           }
         ],
         "name": "privateSend",
@@ -632,12 +651,114 @@
           {
             "name": "_bp",
             "type": "bytes"
+          },
+          {
+            "name": "_data",
+            "type": "bytes1[137]"
           }
         ],
         "name": "withdrawFunds",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_index",
+            "type": "uint256"
+          }
+        ],
+        "name": "getTransaction",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "name": "Xs",
+                "type": "uint256[3]"
+              },
+              {
+                "name": "YBits",
+                "type": "uint8[3]"
+              },
+              {
+                "name": "amount",
+                "type": "uint256[2]"
+              },
+              {
+                "name": "index",
+                "type": "uint256"
+              },
+              {
+                "name": "txIndex",
+                "type": "uint256"
+              }
+            ],
+            "name": "",
+            "type": "tuple[]"
+          },
+          {
+            "name": "",
+            "type": "bytes1[137]"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_indexes",
+            "type": "uint256[]"
+          }
+        ],
+        "name": "getTransactions",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256[]"
+          },
+          {
+            "components": [
+              {
+                "name": "Xs",
+                "type": "uint256[3]"
+              },
+              {
+                "name": "YBits",
+                "type": "uint8[3]"
+              },
+              {
+                "name": "amount",
+                "type": "uint256[2]"
+              },
+              {
+                "name": "index",
+                "type": "uint256"
+              },
+              {
+                "name": "txIndex",
+                "type": "uint256"
+              }
+            ],
+            "name": "",
+            "type": "tuple[]"
+          },
+          {
+            "name": "",
+            "type": "bytes1[]"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
         "type": "function"
       },
       {
@@ -690,6 +811,35 @@
               {
                 "name": "encodeds",
                 "type": "uint256[2]"
+              }
+            ],
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "indexs",
+            "type": "uint256[]"
+          }
+        ],
+        "name": "getTxs",
+        "outputs": [
+          {
+            "components": [
+              {
+                "name": "utxoIndexes",
+                "type": "uint256[]"
+              },
+              {
+                "name": "data",
+                "type": "bytes1[137]"
               }
             ],
             "name": "",
